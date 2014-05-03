@@ -1,0 +1,19 @@
+{
+    "name":         "kagency/couchdb-endpoint",
+    "description":  "PHP Endpoint for CouchDB replication with about any backend.",
+    "autoload": {
+        "psr-0": {
+            "Kagency": "src/"
+        }
+    },
+    "require":      {
+        "silex/silex": "@stable"
+    },
+    "require-dev": {
+        "pdepend/pdepend": "@stable",
+        "phpmd/phpmd": "@stable",
+        "phpunit/phpunit": "@stable",
+        "sebastian/phpcpd": "@stable",
+        "squizlabs/php_codesniffer": "@stable"
+    }
+}
