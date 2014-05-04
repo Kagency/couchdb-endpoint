@@ -36,7 +36,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                             'response' => Response::create(
                                 $interaction['response']['content'],
                                 $interaction['response']['code'],
-                                $this->mapHeaders($interaction['response']['headers'])
+                                $this->mapHeaders($interaction['response']['headers'], '')
                             ),
                         );
                     },
@@ -57,12 +57,12 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
      * @param array $headers
      * @return array
      */
-    protected function mapHeaders(array $headers)
+    protected function mapHeaders(array $headers, $prefix = 'HTTP_')
     {
         $phpHeaders = array();
         foreach ($headers as $headerPair) {
             list($name, $value) = $headerPair;
-            $phpHeaders['HTTP_' . str_replace('-', '_', strtoupper($name))] = $value;
+            $phpHeaders[$prefix . str_replace('-', '_', strtoupper($name))] = $value;
         }
 
         return $phpHeaders;
@@ -73,6 +73,51 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
      */
     public function testReplayReplication(array $dumps)
     {
-        $this->markTestIncomplete("@TODO: Implement Test.");
+        foreach ($dumps as $dump) {
+            $request = $dump['request'];
+            $expectedResponse = $dump['response'];
+
+            $endpoint = new Endpoint\Silex();
+            $response = $endpoint->testRun($request);
+
+            $this->assertEquals(
+                $this->simplifyResponse($expectedResponse),
+                $this->simplifyResponse($response)
+            );
+        }
+    }
+
+    /**
+     * Simplify response
+     *
+     * simplifies responses for easier comparision. Also strips away headers,
+     * which are not relevant to us.
+     *
+     * @param Response $response
+     * @return array
+     */
+    protected function simplifyResponse(Response $response)
+    {
+        $headerBlackList = array(
+            'server' => true,
+            'date' => true,
+            'content-length' => true,
+            'cache-control' => true,
+        );
+
+        $headers = array();
+        foreach ($response->headers as $name => $value) {
+            if (isset($headerBlackList[$name])) {
+                continue;
+            }
+
+            $headers[$name] = reset($value);
+        }
+
+        return array(
+            'status' => $response->getStatusCode(),
+            'headers' => $headers,
+            'content' => $response->getContent(),
+        );
     }
 }
