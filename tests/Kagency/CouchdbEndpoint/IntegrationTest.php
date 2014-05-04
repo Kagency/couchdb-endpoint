@@ -5,6 +5,9 @@ namespace Kagency\CouchdbEndpoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group integration
+ */
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
     /**
