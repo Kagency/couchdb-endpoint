@@ -2,7 +2,12 @@
 
 namespace Kagency\CouchdbEndpoint;
 
-class Endpoint
+abstract class Endpoint
 {
-    
+    /**
+     * Run endpoint
+     *
+     * @return void
+     */
+    abstract public function run();
 }
