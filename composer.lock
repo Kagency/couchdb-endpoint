@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "3dc4ae613e25f661b44d0219ac0d3ab7",
+    "hash": "b2056db4ea1eaf5744536f20e8953dd1",
     "packages": [
         {
             "name": "pimple/pimple",
@@ -931,6 +931,51 @@
             "time": "2014-05-02 07:04:11"
         },
         {
+            "name": "phuedx/tnetstring",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phuedx/tnetstring.git",
+                "reference": "1bbd830c5006d45664223ec398d8190c45bba4a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phuedx/tnetstring/zipball/1bbd830c5006d45664223ec398d8190c45bba4a0",
+                "reference": "1bbd830c5006d45664223ec398d8190c45bba4a0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 5.2.17"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "TNetstring": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sam Smith",
+                    "email": "samuel.david.smith@gmail.com",
+                    "homepage": "https://github.com/phuedx"
+                }
+            ],
+            "description": "A tagged netstring encoder/decoder for PHP.",
+            "homepage": "https://github.com/phuedx/tnetstring",
+            "keywords": [
+                "netstring",
+                "tnetstring"
+            ],
+            "support": {
+                "source": "https://github.com/phuedx/tnetstring/tree/master",
+                "issues": "https://github.com/phuedx/tnetstring/issues"
+            },
+            "time": "2012-03-01 09:09:59"
+        },
+        {
             "name": "sebastian/comparator",
             "version": "1.0.0",
             "source": {
@@ -1566,7 +1611,8 @@
         "phpmd/phpmd": 0,
         "phpunit/phpunit": 0,
         "sebastian/phpcpd": 0,
-        "squizlabs/php_codesniffer": 0
+        "squizlabs/php_codesniffer": 0,
+        "phuedx/tnetstring": 20
     },
     "platform": [
 

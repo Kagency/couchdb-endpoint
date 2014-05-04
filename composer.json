@@ -1,6 +1,13 @@
 {
     "name":         "kagency/couchdb-endpoint",
     "description":  "PHP Endpoint for CouchDB replication with about any backend.",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/phuedx/tnetstring.git"
+        }
+
+    ],
     "autoload": {
         "psr-0": {
             "Kagency": "src/"
@@ -14,6 +21,7 @@
         "phpmd/phpmd": "@stable",
         "phpunit/phpunit": "@stable",
         "sebastian/phpcpd": "@stable",
-        "squizlabs/php_codesniffer": "@stable"
+        "squizlabs/php_codesniffer": "@stable",
+        "phuedx/tnetstring": "@dev"
     }
 }
