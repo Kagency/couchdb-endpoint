@@ -1,0 +1,13 @@
+language: php
+
+php:
+    - 5.4
+    - 5.5
+
+install: ant -logger org.apache.tools.ant.NoBannerLogger initialize
+
+script: ant -logger org.apache.tools.ant.NoBannerLogger test
+
+cache:
+    directories:
+        - vendor
