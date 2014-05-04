@@ -11,12 +11,6 @@
          bootstrap="vendor/autoload.php"
          syntaxCheck="false">
 
-    <groups>
-        <exclude>
-            <group>integration</group>
-        </exclude>
-    </groups>
-
     <testsuites>
         <testsuite name="Unit Tests">
             <directory>tests/</directory>
