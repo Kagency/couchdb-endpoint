@@ -77,12 +77,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             $request = $dump['request'];
             $expectedResponse = $dump['response'];
 
-            $endpoint = new Endpoint\Silex();
+            $endpoint = new Endpoint\Silex(new Container(), "master");
             $response = $endpoint->testRun($request);
 
             $this->assertEquals(
-                $this->simplifyResponse($expectedResponse),
-                $this->simplifyResponse($response)
+                $this->simplifyResponse($request->getPathInfo(), $expectedResponse),
+                $this->simplifyResponse($request->getPathInfo(), $response),
+                "Failed to respond to: " . $request
             );
         }
     }
@@ -93,10 +94,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
      * simplifies responses for easier comparision. Also strips away headers,
      * which are not relevant to us.
      *
+     * @param string $path
      * @param Response $response
      * @return array
      */
-    protected function simplifyResponse(Response $response)
+    protected function simplifyResponse($path, Response $response)
     {
         $headerBlackList = array(
             'server' => true,
@@ -117,7 +119,34 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         return array(
             'status' => $response->getStatusCode(),
             'headers' => $headers,
-            'content' => $response->getContent(),
+            'content' => $this->filterResponseData(
+                $path,
+                json_decode($response->getContent(), true)
+            ),
         );
+    }
+
+    /**
+     * Filter response data
+     *
+     * Based on the path, return filtered response data. Some bits of the data
+     * are just useless to compare.
+     *
+     * @param string $path
+     * @param mixed $data
+     * @return array
+     */
+    protected function filterResponseData($path, $data)
+    {
+        switch (true) {
+            case is_array($data) && $path === '/master/':
+                return array_diff_key(
+                    $data,
+                    array_flip(array('disk_size', 'instance_start_time', 'disk_format_version'))
+                );
+
+            default:
+                return $data;
+        }
     }
 }
