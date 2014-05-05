@@ -145,6 +145,12 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                     array_flip(array('disk_size', 'instance_start_time', 'disk_format_version'))
                 );
 
+            case is_array($data) && $path === '/master/_ensure_full_commit':
+                return array_diff_key(
+                    $data,
+                    array_flip(array('instance_start_time'))
+                );
+
             default:
                 return $data;
         }

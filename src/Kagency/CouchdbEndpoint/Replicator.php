@@ -20,7 +20,7 @@ class Replicator
      *
      * @param string $database
      * @param string $revision
-     * @return JsonResponse
+     * @return Replicator\Error
      */
     public function hasChange($database, $revision)
     {
@@ -30,11 +30,11 @@ class Replicator
     /**
      * Build revision diff
      *
-     * @param string $database
+     * @param array $documentRevisions
      * @param string $revision
-     * @return JsonResponse
+     * @return array
      */
-    public function revisionDiff(array $documents)
+    public function revisionDiff(array $documentRevisions)
     {
         return array_map(
             function ($revision) {
@@ -42,7 +42,28 @@ class Replicator
                     'missing' => $revision,
                 );
             },
-            $documents
+            $documentRevisions
         );
+    }
+
+    /**
+     * Insert bulk
+     *
+     * @param array $documents
+     * @return void
+     */
+    public function insertBulk(array $documents)
+    {
+        return null;
+    }
+
+    /**
+     * Commit
+     *
+     * @return Replicator\OK
+     */
+    public function commit()
+    {
+        return new Replicator\OK();
     }
 }

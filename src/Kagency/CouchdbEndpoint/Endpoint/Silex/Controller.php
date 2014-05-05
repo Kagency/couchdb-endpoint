@@ -75,4 +75,34 @@ class Controller
             )
         );
     }
+
+    /**
+     * Insert bulk
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function insertBulk(Request $request)
+    {
+        return new JsonResponse(
+            $this->replicator->insertBulk(
+                json_decode($request->getContent(), true)
+            ),
+            201
+        );
+    }
+
+    /**
+     * Commit
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function commit(Request $request)
+    {
+        return new JsonResponse(
+            $this->replicator->commit(),
+            201
+        );
+    }
 }
