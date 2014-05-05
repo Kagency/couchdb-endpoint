@@ -19,7 +19,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $dumps = array();
         $decoder = new \TNetstring_Decoder();
-        foreach (glob(__DIR__ . '/_fixtures/*.tns') as $fixtureFile) {
+        foreach (glob(__DIR__ . '/_fixtures/01_*.tns') as $fixtureFile) {
             $dumps[] = array(
                 array_map(
                     function (array $interaction) {
