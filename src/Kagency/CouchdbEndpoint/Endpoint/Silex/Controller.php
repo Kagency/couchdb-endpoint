@@ -60,4 +60,19 @@ class Controller
             $result instanceof Replicator\Error ? 404 : 200
         );
     }
+
+    /**
+     * Calculate revision diff
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function revisionDiff(Request $request)
+    {
+        return new JsonResponse(
+            $this->replicator->revisionDiff(
+                json_decode($request->getContent(), true)
+            )
+        );
+    }
 }

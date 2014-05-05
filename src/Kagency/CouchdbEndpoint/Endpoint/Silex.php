@@ -38,6 +38,7 @@ class Silex extends Endpoint
 
         $this->app->get("/{database}/", array($controller, 'getDatabaseStatus'));
         $this->app->get("/{database}/_local/{revision}", array($controller, 'hasChange'));
+        $this->app->post("/{database}/_revs_diff", array($controller, 'revisionDiff'));
     }
 
     /**

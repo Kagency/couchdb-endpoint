@@ -26,4 +26,23 @@ class Replicator
     {
         return new Replicator\Error('not_found', 'missing');
     }
+
+    /**
+     * Build revision diff
+     *
+     * @param string $database
+     * @param string $revision
+     * @return JsonResponse
+     */
+    public function revisionDiff(array $documents)
+    {
+        return array_map(
+            function ($revision) {
+                return array(
+                    'missing' => $revision,
+                );
+            },
+            $documents
+        );
+    }
 }
