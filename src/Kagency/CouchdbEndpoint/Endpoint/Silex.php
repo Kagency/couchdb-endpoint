@@ -3,6 +3,7 @@
 namespace Kagency\CouchdbEndpoint\Endpoint;
 
 use Kagency\CouchdbEndpoint\Endpoint;
+use Kagency\CouchdbEndpoint\Container;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,15 +18,26 @@ class Silex extends Endpoint
     protected $app;
 
     /**
+     * Dependency Injection Container
+     *
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * __construct
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Container $container, $name = "storage")
     {
         $this->app = new \Silex\Application();
+        $controller = new Silex\Controller(
+            $container['replicator']
+        );
 
-        // @TODO: Configure routes
+        $this->app->get("/{database}/", array($controller, 'getDatabaseStatus'));
+        $this->app->get("/{database}/_local/{revision}", array($controller, 'hasChange'));
     }
 
     /**
