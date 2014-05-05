@@ -62,6 +62,23 @@ class Controller
     }
 
     /**
+     * Stored synced change
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function storeSyncedChange(Request $request)
+    {
+        $revisionDocument = json_decode($request->getContent(), true);
+        return new JsonResponse(
+            $this->replicator->storeSyncedChange(
+                $revisionDocument
+            ),
+            201
+        );
+    }
+
+    /**
      * Calculate revision diff
      *
      * @param Request $request

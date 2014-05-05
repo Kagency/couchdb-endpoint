@@ -66,4 +66,18 @@ class Replicator
     {
         return new Replicator\OK();
     }
+
+    /**
+     * Store synced change
+     *
+     * @param array $revisionDocument
+     * @return void
+     */
+    public function storeSyncedChange(array $revisionDocument)
+    {
+        return new Replicator\DocumentCreated(
+            $revisionDocument['_id'],
+            1
+        );
+    }
 }

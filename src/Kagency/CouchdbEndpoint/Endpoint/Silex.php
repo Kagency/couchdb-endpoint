@@ -38,6 +38,7 @@ class Silex extends Endpoint
 
         $this->app->get("/{database}/", array($controller, 'getDatabaseStatus'));
         $this->app->get("/{database}/_local/{revision}", array($controller, 'hasChange'));
+        $this->app->put("/{database}/_local/{revision}", array($controller, 'storeSyncedChange'));
         $this->app->post("/{database}/_revs_diff", array($controller, 'revisionDiff'));
         $this->app->post("/{database}/_bulk_docs", array($controller, 'insertBulk'));
         $this->app->post("/{database}/_ensure_full_commit", array($controller, 'commit'));

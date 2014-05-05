@@ -105,6 +105,8 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             'date' => true,
             'content-length' => true,
             'cache-control' => true,
+            'location' => true,
+            'etag' => true,
         );
 
         $headers = array();
@@ -149,6 +151,12 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                 return array_diff_key(
                     $data,
                     array_flip(array('instance_start_time'))
+                );
+
+            case is_array($data) && $path === '/master/_local/8e3cbbec10195c58326d22c4a4e64fb4':
+                return array_diff_key(
+                    $data,
+                    array_flip(array('rev'))
                 );
 
             default:
