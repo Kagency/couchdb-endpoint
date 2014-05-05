@@ -13,6 +13,9 @@ class Container extends \Pimple
     {
         parent::__construct();
 
-        $this['replicator'] = new Replicator();
+        $this['storage'] = new Storage();
+        $this['replicator'] = new Replicator(
+            $this['storage']
+        );
     }
 }

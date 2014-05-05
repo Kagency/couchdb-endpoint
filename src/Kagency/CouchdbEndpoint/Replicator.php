@@ -5,6 +5,24 @@ namespace Kagency\CouchdbEndpoint;
 class Replicator
 {
     /**
+     * Storage
+     *
+     * @var Storage
+     */
+    protected $storage;
+
+    /**
+     * __construct
+     *
+     * @param Storage $storage
+     * @return void
+     */
+    public function __construct(Storage $storage)
+    {
+        $this->storage = $storage;
+    }
+
+    /**
      * Get database status
      *
      * @param string $database
@@ -12,7 +30,12 @@ class Replicator
      */
     public function getDatabaseStatus($database)
     {
-        return new Replicator\DatabaseStatus($database);
+        $status = new Replicator\DatabaseStatus($database);
+        $status->doc_count = $this->storage->getDocumentCount();
+        $status->update_seq = $this->storage->getUpdateSequence();
+        $status->committed_update_seq = $status->update_seq;
+
+        return $status;
     }
 
     /**
