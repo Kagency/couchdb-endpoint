@@ -144,7 +144,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             case is_array($data) && $path === '/master/':
                 return array_diff_key(
                     $data,
-                    array_flip(array('disk_size', 'instance_start_time', 'disk_format_version'))
+                    array_flip(array('data_size', 'disk_size', 'instance_start_time', 'disk_format_version'))
                 );
 
             case is_array($data) && $path === '/master/_ensure_full_commit':
