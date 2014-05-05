@@ -42,6 +42,8 @@ class Silex extends Endpoint
         $this->app->post("/{database}/_revs_diff", array($controller, 'revisionDiff'));
         $this->app->post("/{database}/_bulk_docs", array($controller, 'insertBulk'));
         $this->app->post("/{database}/_ensure_full_commit", array($controller, 'commit'));
+
+        $this->app->error(array($controller, 'exception'));
     }
 
     /**

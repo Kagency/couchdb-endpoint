@@ -28,6 +28,23 @@ class Controller
     }
 
     /**
+     * Exception
+     *
+     * @param \Exception $exception
+     * @return JsonResponse
+     */
+    public function exception(\Exception $exception)
+    {
+        return new JsonResponse(
+            new Replicator\Error(
+                'internal',
+                (string) $exception
+            ),
+            500
+        );
+    }
+
+    /**
      * Get database status
      *
      * @param Request $request
