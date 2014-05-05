@@ -18,9 +18,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     public function getFixtures()
     {
         $dumps = array();
+        $aggregate = array();
         $decoder = new \TNetstring_Decoder();
-        foreach (glob(__DIR__ . '/_fixtures/01_*.tns') as $fixtureFile) {
-            $dumps[] = array(
+        foreach (glob(__DIR__ . '/_fixtures/*.tns') as $fixtureFile) {
+            $aggregate = array_merge(
+                $aggregate,
                 array_map(
                     function (array $interaction) {
                         return array(
@@ -43,6 +45,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                     $decoder->decode(file_get_contents($fixtureFile))
                 )
             );
+            $dumps[] = array($aggregate);
         }
 
         return $dumps;
@@ -73,7 +76,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
      */
     public function testReplayReplication(array $dumps)
     {
-        foreach ($dumps as $dump) {
+        foreach ($dumps as $nr => $dump) {
             $request = $dump['request'];
             $expectedResponse = $dump['response'];
 
@@ -83,7 +86,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(
                 $this->simplifyResponse($request->getPathInfo(), $expectedResponse),
                 $this->simplifyResponse($request->getPathInfo(), $response),
-                "Failed to respond to: " . $request
+                "Failed to respond to #$nr: $request"
             );
         }
     }
