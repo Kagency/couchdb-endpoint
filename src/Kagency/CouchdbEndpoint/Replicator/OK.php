@@ -11,7 +11,7 @@ use Kagency\CouchdbEndpoint\Struct;
  *
  * @version $Revision$
  */
-class OK
+class OK extends Struct
 {
     /**
      * Everything is OK
