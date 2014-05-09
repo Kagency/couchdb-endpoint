@@ -76,12 +76,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
      */
     public function testReplayReplication(array $dumps)
     {
+        $container = new Container();
         foreach ($dumps as $nr => $dump) {
             $request = $dump['request'];
             $expectedResponse = $dump['response'];
 
-            $endpoint = new Endpoint\Silex(new Container(), "master");
-            $response = $endpoint->testRun($request);
+            $endpoint = new Endpoint\Symfony($container, "master");
+            $response = $endpoint->runRequest($request);
 
             $this->assertEquals(
                 $this->simplifyResponse($request->getPathInfo(), $expectedResponse),
