@@ -14,7 +14,11 @@
         }
     },
     "require":      {
-        "silex/silex": "@stable"
+        "symfony/http-kernel": "@stable",
+        "symfony/routing": "@stable",
+        "symfony/dependency-injection": "@stable",
+        "symfony/config": "@stable",
+        "symfony/yaml": "@stable"
     },
     "require-dev": {
         "pdepend/pdepend": "@stable",
