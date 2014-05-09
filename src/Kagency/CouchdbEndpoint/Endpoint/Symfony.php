@@ -69,7 +69,7 @@ class Symfony extends Endpoint
      */
     public function runRequest(Request $request)
     {
-        $kernel = $this->application->createHttpKernel();
+        $kernel = $this->application->createHttpKernel($request);
         return $kernel->handle($request);
     }
 }

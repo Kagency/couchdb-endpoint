@@ -2,6 +2,7 @@
 
 namespace Kagency\CouchdbEndpoint\Endpoint\Symfony;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Routing;
 use Symfony\Component\HttpKernel;
@@ -52,9 +53,11 @@ class Application
      *
      * @return HttpKernel\HttpKernel
      */
-    public function createHttpKernel()
+    public function createHttpKernel(Request $request)
     {
         $context = new Routing\RequestContext();
+        $context->fromRequest($request);
+
         $matcher = new Routing\Matcher\UrlMatcher($this->routes, $context);
 
         $errorHandler = array(new ErrorController, 'exception');
