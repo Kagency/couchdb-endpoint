@@ -43,6 +43,21 @@ class Storage
     }
 
     /**
+     * Get document
+     *
+     * @param string $document
+     * @return mixed
+     */
+    public function getDocument($document)
+    {
+        if (!isset($this->data[$document])) {
+            throw new \OutOfBoundsException("No document with ID $document");
+        }
+
+        return $this->data[$document];
+    }
+
+    /**
      * Store documents
      *
      * @param array $documents

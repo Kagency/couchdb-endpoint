@@ -39,6 +39,17 @@ class Replicator
     }
 
     /**
+     * Get document
+     *
+     * @param string $document
+     * @return mixed
+     */
+    public function getDocument($document)
+    {
+        return $this->storage->getDocument($document);
+    }
+
+    /**
      * Check if change exists
      *
      * @param string $database

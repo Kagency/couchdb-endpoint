@@ -43,6 +43,21 @@ class Controller
     }
 
     /**
+     * Get document
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getDocument(Request $request)
+    {
+        return new JsonResponse(
+            $this->replicator->getDocument(
+                $request->get('document')
+            )
+        );
+    }
+
+    /**
      * Check if change exists
      *
      * @param Request $request
