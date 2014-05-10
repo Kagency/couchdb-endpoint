@@ -82,6 +82,20 @@ class Replicator
     }
 
     /**
+     * Get changes
+     *
+     * @param string $since
+     * @return array
+     */
+    public function getChanges($since)
+    {
+        return new Replicator\Changes(
+            $this->storage->getChanges($since),
+            $this->storage->getUpdateSequence()
+        );
+    }
+
+    /**
      * Commit
      *
      * @return Replicator\OK

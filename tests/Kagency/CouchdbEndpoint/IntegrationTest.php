@@ -119,6 +119,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             'cache-control' => true,
             'location' => true,
             'etag' => true,
+            'transfer-encoding' => true,
         );
 
         $headers = array();

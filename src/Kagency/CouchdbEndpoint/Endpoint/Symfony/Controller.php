@@ -110,6 +110,27 @@ class Controller
     }
 
     /**
+     * Get changes
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getChanges(Request $request)
+    {
+        // @TODO: Handle feed and style options, I gues those are
+        // output options.
+        //
+        // @TODO: Should we do something with the heartbeat parameter?
+
+        return new JsonResponse(
+            $this->replicator->getChanges(
+                $request->get('since')
+            ),
+            200
+        );
+    }
+
+    /**
      * Commit
      *
      * @param Request $request

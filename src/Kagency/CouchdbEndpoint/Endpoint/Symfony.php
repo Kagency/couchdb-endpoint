@@ -42,6 +42,7 @@ class Symfony extends Endpoint
         $this->application->addRoute('POST', "/{database}/_revs_diff", array($controller, 'revisionDiff'));
         $this->application->addRoute('POST', "/{database}/_bulk_docs", array($controller, 'insertBulk'));
         $this->application->addRoute('POST', "/{database}/_ensure_full_commit", array($controller, 'commit'));
+        $this->application->addRoute('GET', "/{database}/_changes", array($controller, 'getChanges'));
     }
 
     /**

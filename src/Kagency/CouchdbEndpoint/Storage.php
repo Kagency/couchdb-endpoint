@@ -12,6 +12,13 @@ class Storage
     private $data = array();
 
     /**
+     * Updates
+     *
+     * @var int
+     */
+    private $updates = array();
+
+    /**
      * Get document count
      *
      * @return void
@@ -28,7 +35,11 @@ class Storage
      */
     public function getUpdateSequence()
     {
-        return $this->getDocumentCount();
+        if (!count($this->updates)) {
+            return 0;
+        }
+
+        return max(array_keys($this->updates));
     }
 
     /**
@@ -41,6 +52,13 @@ class Storage
     {
         foreach ($documents as $document) {
             $this->data[$document['_id']] = $document;
+
+            $sequence = count($this->updates) + 1;
+            $this->updates[$sequence] = array(
+                'id' => $document['_id'],
+                'sequence' => $sequence,
+                'revision' => $document['_rev'],
+            );
         }
     }
 
@@ -53,5 +71,31 @@ class Storage
     public function updateDocuments(array $documents)
     {
         return null;
+    }
+
+    /**
+     * Get changes
+     *
+     * @param string $since
+     * @return Storage\Update[]
+     */
+    public function getChanges($since)
+    {
+        return array_values(
+            array_map(
+                function ($update) {
+                    return new Storage\Update(
+                        $update['sequence'],
+                        $update['id'],
+                        array(
+                            array(
+                                'rev' => $update['revision'],
+                            )
+                        )
+                    );
+                },
+                $this->updates
+            )
+        );
     }
 }
