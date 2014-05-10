@@ -5,13 +5,20 @@ namespace Kagency\CouchdbEndpoint;
 class Storage
 {
     /**
+     * data = array()
+     *
+     * @var array
+     */
+    private $data = array();
+
+    /**
      * Get document count
      *
      * @return void
      */
     public function getDocumentCount()
     {
-        return 0;
+        return count($this->data);
     }
 
     /**
@@ -22,5 +29,29 @@ class Storage
     public function getUpdateSequence()
     {
         return 0;
+    }
+
+    /**
+     * Store documents
+     *
+     * @param array $documents
+     * @return void
+     */
+    public function storeDocuments(array $documents)
+    {
+        foreach ($documents as $document) {
+            $this->data[$document['_id']] = $document;
+        }
+    }
+
+    /**
+     * Update documents
+     *
+     * @param array $documents
+     * @return void
+     */
+    public function updateDocuments(array $documents)
+    {
+        return null;
     }
 }

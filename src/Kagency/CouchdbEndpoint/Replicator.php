@@ -9,7 +9,7 @@ class Replicator
      *
      * @var Storage
      */
-    protected $storage;
+    public $storage;
 
     /**
      * __construct
@@ -72,12 +72,13 @@ class Replicator
     /**
      * Insert bulk
      *
-     * @param array $documents
+     * @param array $updates
      * @return void
      */
-    public function insertBulk(array $documents)
+    public function insertBulk(array $updates)
     {
-        return null;
+        $this->storage->updateDocuments($updates['new_edits'] ?: array());
+        $this->storage->storeDocuments($updates['docs'] ?: array());
     }
 
     /**
