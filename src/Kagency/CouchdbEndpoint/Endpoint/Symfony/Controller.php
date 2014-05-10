@@ -25,7 +25,6 @@ class Controller
     public function __construct(Replicator $replicator)
     {
         $this->replicator = $replicator;
-        var_dump($this);
     }
 
     /**
@@ -36,7 +35,6 @@ class Controller
      */
     public function getDatabaseStatus(Request $request)
     {
-        var_dump($this);
         return new JsonResponse(
             $this->replicator->getDatabaseStatus(
                 $request->get('database')
