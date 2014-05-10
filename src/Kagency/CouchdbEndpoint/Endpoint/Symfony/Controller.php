@@ -3,8 +3,10 @@
 namespace Kagency\CouchdbEndpoint\Endpoint\Symfony;
 
 use Kagency\CouchdbEndpoint\Replicator;
+use Kagency\CouchdbEndpoint\Endpoint\Symfony\Response\MultipartMixed;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Controller
@@ -50,9 +52,13 @@ class Controller
      */
     public function getDocument(Request $request)
     {
-        return new JsonResponse(
-            $this->replicator->getDocument(
-                $request->get('document')
+        return new MultipartMixed(
+            array(
+                new JsonResponse(
+                    $this->replicator->getDocument(
+                        $request->get('document')
+                    )
+                ),
             )
         );
     }

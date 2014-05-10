@@ -131,13 +131,25 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             $headers[$name] = reset($value);
         }
 
+        switch (true) {
+            case $response->headers->get('Content-Type') === 'application/json':
+                $body = json_decode($response->getContent(), true);
+                break;
+
+            case preg_match(
+                '(^multipart/mixed; boundary="(?P<boundary>[a-f0-9]+)"$)',
+                $response->headers->get('Content-Type'),
+                $match
+            ):
+                $body = str_replace($match['boundary'], '<boundary>', $response->getContent());
+                $headers['content-type'] = str_replace($match['boundary'], '<boundary>', $headers['content-type']);
+                break;
+        }
+
         return array(
             'status' => $response->getStatusCode(),
             'headers' => $headers,
-            'content' => $this->filterResponseData(
-                $path,
-                json_decode($response->getContent(), true)
-            ),
+            'content' => $this->filterResponseData($path, $body),
         );
     }
 
