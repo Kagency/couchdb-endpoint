@@ -28,7 +28,7 @@ class Storage
      */
     public function getUpdateSequence()
     {
-        return 0;
+        return $this->getDocumentCount();
     }
 
     /**
