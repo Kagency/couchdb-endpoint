@@ -78,7 +78,15 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Container();
         foreach ($dumps as $nr => $dump) {
-            $request = $dump['request'];
+            // This clone is ESSENTIAL.
+            //
+            // Symfony2 stores the matched controller inside the request. Since
+            // we are replaying the requests from the first test in the second
+            // tests and this uses the same request object, the route would not
+            // be matched again. This causes the cotnroller from the first test
+            // run being re-used, which also means that the first few requests
+            // run against the storage from the first run.
+            $request = clone $dump['request'];
             $expectedResponse = $dump['response'];
 
             $endpoint = new Endpoint\Symfony($container, "master");
