@@ -71,7 +71,7 @@ class Controller
      */
     public function hasChange(Request $request)
     {
-        $result = $this->replicator->hasChange(
+        $result = $this->replicator->getSyncedChange(
             $request->get('database'),
             $request->get('revision')
         );

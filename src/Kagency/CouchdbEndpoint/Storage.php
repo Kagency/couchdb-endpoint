@@ -19,6 +19,13 @@ class Storage
     private $updates = array();
 
     /**
+     * Synced revisions
+     *
+     * @var array
+     */
+    private $syncedRevisions = array();
+
+    /**
      * Get document count
      *
      * @return void
@@ -112,5 +119,32 @@ class Storage
                 $this->updates
             )
         );
+    }
+
+    /**
+     * Get synced change
+     *
+     * @param array $revision
+     * @return void
+     */
+    public function getSyncedChange($revision)
+    {
+        if (!isset($this->syncedRevisions[$revision])) {
+            throw new \OutOfBoundsException("Revision $revision not synchronized.");
+        }
+
+        return $this->syncedRevisions[$revision];
+    }
+
+    /**
+     * Store synced change
+     *
+     * @param array $revisionDocument
+     * @return void
+     */
+    public function storeSyncedChange(array $revisionDocument)
+    {
+        $revision = substr($revisionDocument['_id'], strpos($revisionDocument['_id'], '/') + 1);
+        $this->syncedRevisions[$revision] = $revisionDocument;
     }
 }

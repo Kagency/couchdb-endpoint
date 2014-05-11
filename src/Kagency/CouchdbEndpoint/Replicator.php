@@ -46,7 +46,11 @@ class Replicator
      */
     public function getDocument($document)
     {
-        return $this->storage->getDocument($document);
+        try {
+            return $this->storage->getDocument($document);
+        } catch (\OutOfBoundsException $e) {
+            return new Replicator\Error('not_found', 'missing');
+        }
     }
 
     /**
@@ -56,9 +60,13 @@ class Replicator
      * @param string $revision
      * @return Replicator\Error
      */
-    public function hasChange($database, $revision)
+    public function getSyncedChange($database, $revision)
     {
-        return new Replicator\Error('not_found', 'missing');
+        try {
+            return $this->storage->getSyncedChange($revision);
+        } catch (\OutOfBoundsException $e) {
+            return new Replicator\Error('not_found', 'missing');
+        }
     }
 
     /**
@@ -124,6 +132,7 @@ class Replicator
      */
     public function storeSyncedChange(array $revisionDocument)
     {
+        $this->storage->storeSyncedChange($revisionDocument);
         return new Replicator\DocumentCreated(
             $revisionDocument['_id'],
             1

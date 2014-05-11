@@ -179,6 +179,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                 );
 
             case is_array($data) && $path === '/master/_local/8e3cbbec10195c58326d22c4a4e64fb4':
+            case is_array($data) && $path === '/master/_local/a09c2604722ab3602b17fb93c4d8af89':
                 return array_diff_key(
                     $data,
                     array_flip(array('rev'))
