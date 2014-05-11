@@ -5,6 +5,24 @@ namespace Kagency\CouchdbEndpoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+class Interaction {
+    public $request;
+    public $response;
+
+    /**
+     * __construct
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
+    public function __construct(Request $request, Response $response)
+    {
+        $this->request = $request;
+        $this->response = $response;
+    }
+}
+
 /**
  * @group integration
  */
@@ -25,8 +43,8 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                 $aggregate,
                 array_map(
                     function (array $interaction) {
-                        return array(
-                            'request' => Request::create(
+                        return new Interaction(
+                            Request::create(
                                 $interaction['request']['path'],
                                 $interaction['request']['method'],
                                 array(),
@@ -35,11 +53,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                                 $this->mapHeaders($interaction['request']['headers']),
                                 $interaction['request']['content']
                             ),
-                            'response' => Response::create(
+                            Response::create(
                                 $interaction['response']['content'],
                                 $interaction['response']['code'],
                                 $this->mapHeaders($interaction['response']['headers'], '')
-                            ),
+                            )
                         );
                     },
                     $decoder->decode(file_get_contents($fixtureFile))
@@ -86,8 +104,8 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             // be matched again. This causes the cotnroller from the first test
             // run being re-used, which also means that the first few requests
             // run against the storage from the first run.
-            $request = clone $dump['request'];
-            $expectedResponse = $dump['response'];
+            $request = clone $dump->request;
+            $expectedResponse = $dump->response;
 
             $endpoint = new Endpoint\Symfony($container, "master");
             $response = $endpoint->runRequest($request);
