@@ -78,14 +78,7 @@ class Replicator
      */
     public function revisionDiff(array $documentRevisions)
     {
-        return array_map(
-            function ($revision) {
-                return array(
-                    'missing' => $revision,
-                );
-            },
-            $documentRevisions
-        );
+        return $this->storage->calculateRevisionDiff($documentRevisions);
     }
 
     /**

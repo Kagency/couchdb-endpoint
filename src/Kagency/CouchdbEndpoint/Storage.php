@@ -122,6 +122,34 @@ class Storage
     }
 
     /**
+     * Calculate revision diff
+     *
+     * @param array $existingRevisions
+     * @return array
+     */
+    public function calculateRevisionDiff(array $existingRevisions)
+    {
+        $missingRevisions = array();
+        foreach ($existingRevisions as $id => $revisions) {
+            if (!isset($this->data[$id])) {
+                $missingRevisions[$id] = array(
+                    'missing' => $revisions,
+                );
+                continue;
+            }
+
+            $missingRevisions[$id] = array(
+                'missing' => $revisions,
+                'possible_ancestors' => array(
+                    $this->data[$id]['_rev'],
+                ),
+            );
+        }
+
+        return $missingRevisions;
+    }
+
+    /**
      * Get synced change
      *
      * @param array $revision
