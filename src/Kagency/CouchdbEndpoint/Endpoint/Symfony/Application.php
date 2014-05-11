@@ -9,6 +9,9 @@ use Symfony\Component\HttpKernel;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
+/**
+ * @SuppressWarnings(PHPMD)
+ */
 class Application
 {
     /**
