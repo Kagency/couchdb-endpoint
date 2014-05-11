@@ -133,7 +133,9 @@ class Storage
             throw new \OutOfBoundsException("Revision $revision not synchronized.");
         }
 
-        return $this->syncedRevisions[$revision];
+        $revisionDocument = $this->syncedRevisions[$revision];
+        unset($revisionDocument['_revisions']);
+        return $revisionDocument;
     }
 
     /**
@@ -144,7 +146,27 @@ class Storage
      */
     public function storeSyncedChange(array $revisionDocument)
     {
-        $revision = substr($revisionDocument['_id'], strpos($revisionDocument['_id'], '/') + 1);
-        $this->syncedRevisions[$revision] = $revisionDocument;
+        $id = substr($revisionDocument['_id'], strpos($revisionDocument['_id'], '/') + 1);
+        $revisionDocument['_rev'] = $this->getNextRevision($revisionDocument);
+        $this->syncedRevisions[$id] = $revisionDocument;
+    }
+
+    /**
+     * getNextRevision
+     *
+     * @param mixed array $document
+     * @return void
+     */
+    protected function getNextRevision(array $document)
+    {
+        $revision = isset($document['_rev']) ? $document['_rev'] : '0-0';
+
+        $hash = md5(json_encode($document));
+        if (preg_match('(^(?P<base>\\d+)-)', $revision, $match)) {
+            $base = (int) $match['base'] + 1;
+            return "$base-$hash";
+        }
+
+        throw new \RuntimeException("Invalid revision format encountered: $revision");
     }
 }
