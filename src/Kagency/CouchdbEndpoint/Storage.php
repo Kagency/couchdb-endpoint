@@ -103,22 +103,25 @@ class Storage
      */
     public function getChanges($since)
     {
-        return array_values(
-            array_map(
-                function ($update) {
-                    return new Storage\Update(
-                        $update['sequence'],
-                        $update['id'],
-                        array(
-                            array(
-                                'rev' => $update['revision'],
-                            )
-                        )
-                    );
-                },
-                $this->updates
-            )
-        );
+        $changes = array();
+
+        foreach ($this->updates as $update) {
+            if ($update['sequence'] <= $since) {
+                continue;
+            }
+
+            $changes[] = new Storage\Update(
+                $update['sequence'],
+                $update['id'],
+                array(
+                    array(
+                        'rev' => $update['revision'],
+                    )
+                )
+            );
+        }
+
+        return $changes;
     }
 
     /**
