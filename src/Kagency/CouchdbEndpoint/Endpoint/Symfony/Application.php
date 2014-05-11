@@ -72,4 +72,3 @@ class Application
         return new HttpKernel\HttpKernel($dispatcher, $resolver);
     }
 }
-

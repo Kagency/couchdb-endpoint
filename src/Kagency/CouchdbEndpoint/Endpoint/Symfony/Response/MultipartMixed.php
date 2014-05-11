@@ -68,7 +68,8 @@ class MultipartMixed extends Response
     public static function create($data = '', $status = 200, $headers = array())
     {
         throw new \Exception(
-            "Defining interfaces for constructors or factory methods does not make any fucking sense. Dependencies of objecty vary."
+            "Defining interfaces for constructors or factory methods does not make any fucking sense. " .
+            "Dependencies of objects vary."
         );
     }
 
