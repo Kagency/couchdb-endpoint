@@ -196,8 +196,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                     array_flip(array('instance_start_time'))
                 );
 
-            case is_array($data) && $path === '/master/_local/8e3cbbec10195c58326d22c4a4e64fb4':
-            case is_array($data) && $path === '/master/_local/a09c2604722ab3602b17fb93c4d8af89':
+            case is_array($data) && preg_match('(^/master/_local/[a-f0-9]{32}$)', $path):
                 return array_diff_key(
                     $data,
                     array_flip(array('rev', '_rev'))
