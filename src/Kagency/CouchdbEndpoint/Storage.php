@@ -158,7 +158,7 @@ class Storage
             );
         }
 
-        return $missingRevisions;
+        return array_filter($missingRevisions);
     }
 
     /**

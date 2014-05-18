@@ -21,6 +21,10 @@ class RevisionDiffer
      */
     public function calculate(array $missingRevisions, $lastRevision)
     {
+        if ($missingRevisions === array($lastRevision)) {
+            return null;
+        }
+
         if (!$lastRevision) {
             return new RevisionDiffer\Missing($missingRevisions);
         }
