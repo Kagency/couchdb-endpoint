@@ -1,0 +1,169 @@
+#!/usr/bin/env php
+<?php
+
+$host = parse_url(isset($argv[1]) ? $argv[1] : 'http://localhost:5984/');
+
+try {http_request($host, '/source', 'DELETE');} catch (Exception $e) {}
+try {http_request($host, '/master', 'DELETE');} catch (Exception $e) {}
+try {http_request($host, '/target', 'DELETE');} catch (Exception $e) {}
+
+http_request($host, '/source', 'PUT');
+http_request($host, '/master', 'PUT');
+http_request($host, '/target', 'PUT');
+
+// Basic document replication
+$test1 = json_decode(http_request($host, '/source/test-1', 'PUT', json_encode(array(
+    'data' => 'Version 1',
+))));
+
+record("01_replicate_data_into.tns");
+replicate($host, 'source', 'http://127.0.0.1:5985/master');
+
+record("02_replicate_data_from.tns");
+replicate($host, 'http://127.0.0.1:5985/master', 'target');
+
+// Replicating updates
+$test1->data = 'Version 2';
+$test1->_rev = $test1->rev;
+unset($test1->id, $test1->rev, $test1->ok);
+http_request($host, '/source/test-1', 'PUT', json_encode($test1));
+
+$test2 = json_decode(http_request($host, '/source/test-2', 'PUT', json_encode(array(
+    'data' => 'Version 1',
+))));
+
+record("03_replicate_update_into.tns");
+replicate($host, 'source', 'http://127.0.0.1:5985/master');
+
+record("04_replicate_update_from.tns");
+replicate($host, 'http://127.0.0.1:5985/master', 'target');
+
+// Causing some conflict
+$test1 = json_decode(http_request($host, '/source/test-1'));
+$test1->data = 'Version 3';
+$test1->conflict = 'Some data';
+http_request($host, '/source/test-1', 'PUT', json_encode($test1));
+
+$test1 = json_decode(http_request($host, '/target/test-1'));
+$test1->data = 'Version 3';
+$test1->conflict = 'Some other data';
+http_request($host, '/target/test-1', 'PUT', json_encode($test1));
+
+record("05_conflict.tns");
+replicate($host, 'source', 'http://127.0.0.1:5985/master');
+replicate($host, 'target', 'http://127.0.0.1:5985/master');
+
+record("06_conflict_sync.tns");
+replicate($host, 'http://127.0.0.1:5985/master', 'source');
+replicate($host, 'http://127.0.0.1:5985/master', 'target');
+
+// File replication
+$test1 = json_decode(http_request($host, '/source/test-1'));
+http_request($host, '/source/test-1/README.md?rev=' . $test1->_rev, 'PUT', file_get_contents(__DIR__ . '/README.md'), 'text/text');
+
+record("07_replicate_file.tns");
+replicate($host, 'source', 'http://127.0.0.1:5985/master');
+replicate($host, 'http://127.0.0.1:5985/master', 'target');
+
+$test1 = json_decode(http_request($host, '/source/test-1'));
+http_request($host, '/source/test-1/README.md?rev=' . $test1->_rev, 'PUT', file_get_contents(__DIR__ . '/README.md') . ' foo', 'text/text');
+
+record("08_update_attachment.tns");
+replicate($host, 'source', 'http://127.0.0.1:5985/master');
+replicate($host, 'http://127.0.0.1:5985/master', 'target');
+
+function record($name)
+{
+    echo "Record now: `mitmdump -P http://localhost:5984 -p 5985 --anticache -z -w $name`", PHP_EOL;
+    fgets(STDIN);
+}
+
+function replicate(array $host, $source, $target)
+{
+    return http_request($host, '/_replicate', 'POST', json_encode(array(
+        'source' => $source,
+        'target' => $target,
+    )));
+}
+
+/**
+ * Execute a HTTP request
+ *
+ * Will throw an exception if the server responds with a status >= 400 or on
+ * connection failure.
+ *
+ * Returns the response body on success as a string.
+ *
+ * @param array $host
+ * @param string $path
+ * @param string $method
+ * @param mixed $data
+ * @return string
+ */
+function http_request(array $host, $path, $method = 'GET', $data = null, $contentType = 'application/json')
+{
+    $httpFilePointer = @fopen(
+        $url = $host['scheme'] . '://' . $host['user'] . ':' . $host['pass'] . '@' . $host['host']  . ':' . $host['port'] . $path,
+        'r',
+        false,
+        stream_context_create(
+            array(
+                'http' => array(
+                    'method'        => $method,
+                    'content'       => $data,
+                    'ignore_errors' => true,
+                    'header'        => 'Content-type: ' . $contentType,
+                ),
+            )
+        )
+    );
+
+    // Check if connection has been established successfully
+    if ( $httpFilePointer === false )
+    {
+        $error = error_get_last();
+        throw new Exception( "Could not connect to server at $url: $error" );
+    }
+
+    // Read request body
+    $body = '';
+    while ( !feof( $httpFilePointer ) )
+    {
+        $body .= fgets( $httpFilePointer );
+    }
+
+    $metaData   = stream_get_meta_data( $httpFilePointer );
+    // This depends on wheather PHP is installed with curl stream wrappers or
+    // not…
+    $rawHeaders = isset( $metaData['wrapper_data']['headers'] ) ? $metaData['wrapper_data']['headers'] : $metaData['wrapper_data'];
+    $headers    = array();
+    foreach ( $rawHeaders as $lineContent )
+    {
+        // Extract header values
+        if ( preg_match( '(^HTTP/(?P<version>\d+\.\d+)\s+(?P<status>\d+))S', $lineContent, $match ) )
+        {
+            $headers['version'] = $match['version'];
+            $headers['status']  = (int) $match['status'];
+        }
+        else
+        {
+            list( $key, $value ) = explode( ':', $lineContent, 2 );
+            $headers[strtolower( $key )] = ltrim( $value );
+        }
+    }
+
+    // @HACK: Ugly hack. Detect auth fail by matching agaisnt the location
+    // header. CouchDB answers with 200 OK on failed, but required, auth.
+    if ( isset( $headers['location'] ) &&
+         preg_match( '(/session.*reason=(?P<reason>.*)$)', $headers['location'], $match ) )
+    {
+        throw new Exception( "Auth failure: " . urldecode( $match['reason'] ) );
+    }
+
+    if ( $headers['status'] >= 400 )
+    {
+        throw new Exception( "Server returned with error: " . $headers['status'] . " for URL $url\n\n" . $body );
+    }
+
+    return $body;
+}
