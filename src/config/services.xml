@@ -11,9 +11,13 @@
 
         <service id="Kagency.CouchdbEndpoint.Storage" class="Kagency\CouchdbEndpoint\Storage">
             <argument type="service" id="Kagency.CouchdbEndpoint.RevisionDiffer" />
+            <argument type="service" id="Kagency.CouchdbEndpoint.ConflictDecider" />
         </service>
 
         <service id="Kagency.CouchdbEndpoint.RevisionDiffer" class="Kagency\CouchdbEndpoint\RevisionDiffer">
+        </service>
+
+        <service id="Kagency.CouchdbEndpoint.ConflictDecider" class="Kagency\CouchdbEndpoint\ConflictDecider">
         </service>
     </services>
 </container>

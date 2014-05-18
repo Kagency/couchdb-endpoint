@@ -33,14 +33,23 @@ class Storage
     private $revisionDiffer;
 
     /**
+     * Conflict decider
+     *
+     * @var ConflictDecider
+     */
+    private $conflictDecider;
+
+    /**
      * __construct
      *
      * @param RevisionDiffer $revisionDiffer
+     * @param ConflictDecider $conflictDecider
      * @return void
      */
-    public function __construct(RevisionDiffer $revisionDiffer)
+    public function __construct(RevisionDiffer $revisionDiffer, ConflictDecider $conflictDecider)
     {
         $this->revisionDiffer = $revisionDiffer;
+        $this->conflictDecider = $conflictDecider;
     }
 
     /**
@@ -91,15 +100,31 @@ class Storage
     public function storeDocuments(array $documents)
     {
         foreach ($documents as $document) {
-            $this->data[$document['_id']] = $document;
-
-            $sequence = count($this->updates) + 1;
-            $this->updates[$sequence] = array(
-                'id' => $document['_id'],
-                'sequence' => $sequence,
-                'revision' => $document['_rev'],
-            );
+            $this->storeDocument($document);
         }
+    }
+
+    /**
+     * storeDocument
+     *
+     * @param array $document
+     * @return void
+     */
+    protected function storeDocument(array $document)
+    {
+        $documentId = $document['_id'];
+        if (isset($this->data[$documentId])) {
+            $document = $this->conflictDecider->select($document, $this->data[$documentId]);
+        }
+
+        $this->data[$document['_id']] = $document;
+
+        $sequence = count($this->updates) + 1;
+        $this->updates[$sequence] = array(
+            'id' => $document['_id'],
+            'sequence' => $sequence,
+            'revision' => $document['_rev'],
+        );
     }
 
     /**
