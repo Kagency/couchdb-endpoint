@@ -26,6 +26,24 @@ class Storage
     private $syncedRevisions = array();
 
     /**
+     * Revision differ
+     *
+     * @var RevisionDiffer
+     */
+    private $revisionDiffer;
+
+    /**
+     * __construct
+     *
+     * @param RevisionDiffer $revisionDiffer
+     * @return void
+     */
+    public function __construct(RevisionDiffer $revisionDiffer)
+    {
+        $this->revisionDiffer = $revisionDiffer;
+    }
+
+    /**
      * Get document count
      *
      * @return void
@@ -134,18 +152,9 @@ class Storage
     {
         $missingRevisions = array();
         foreach ($existingRevisions as $id => $revisions) {
-            if (!isset($this->data[$id])) {
-                $missingRevisions[$id] = array(
-                    'missing' => $revisions,
-                );
-                continue;
-            }
-
-            $missingRevisions[$id] = array(
-                'missing' => $revisions,
-                'possible_ancestors' => array(
-                    $this->data[$id]['_rev'],
-                ),
+            $missingRevisions[$id] = $this->revisionDiffer->calculate(
+                $revisions,
+                isset($this->data[$id]) ? $this->data[$id]['_rev'] : null
             );
         }
 
