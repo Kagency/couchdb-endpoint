@@ -122,6 +122,7 @@ class Storage
     public function getChanges($since)
     {
         $changes = array();
+        $sequenceMap = array();
 
         foreach ($this->updates as $update) {
             if ($update['sequence'] <= $since) {
@@ -137,9 +138,29 @@ class Storage
                     )
                 )
             );
+            $sequenceMap[$update['id']][] = $update['sequence'];
         }
 
-        return $changes;
+        // Filter changes, we do not need. Only replicate the last
+        // change for every document.
+        $sequenceMap = array_map(
+            function ($sequences) {
+                return array_slice($sequences, 0, -1);
+            },
+            $sequenceMap
+        );
+
+        return array_values(
+            array_filter(
+                $changes,
+                function ($change) use ($sequenceMap) {
+                    return !in_array(
+                        $change->seq,
+                        $sequenceMap[$change->id]
+                    );
+                }
+            )
+        );
     }
 
     /**
