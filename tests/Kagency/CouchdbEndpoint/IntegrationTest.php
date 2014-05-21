@@ -35,7 +35,22 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
      */
     public function getFixtures()
     {
-        $dumps = array();
+        return array_map(
+            function ($file) {
+                return array(pathinfo($file, PATHINFO_FILENAME));
+            },
+            glob(__DIR__ . '/_fixtures/*.tns')
+        );
+    }
+
+    /**
+     * getRequests
+     *
+     * @param mixed $fixtureFile
+     * @return void
+     */
+    protected function getRequests($finalFixtureFile)
+    {
         $aggregate = array();
         $decoder = new \TNetstring_Decoder();
         foreach (glob(__DIR__ . '/_fixtures/*.tns') as $fixtureFile) {
@@ -63,10 +78,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                     $decoder->decode(file_get_contents($fixtureFile))
                 )
             );
-            $dumps[] = array($aggregate);
+
+            if (pathinfo($fixtureFile, PATHINFO_FILENAME) === $finalFixtureFile) {
+                return $aggregate;
+            }
         }
 
-        return $dumps;
+        throw new \RuntimeException("Unknown fixture file $finalFixtureFile");
     }
 
     /**
@@ -92,8 +110,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getFixtures
      */
-    public function testReplayReplication(array $dumps)
+    public function testReplayReplication($fixtureFile)
     {
+        $dumps = $this->getRequests($fixtureFile);
         $container = new Container();
         foreach ($dumps as $nr => $dump) {
             // This clone is ESSENTIAL.
