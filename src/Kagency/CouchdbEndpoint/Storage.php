@@ -40,16 +40,24 @@ class Storage
     private $conflictDecider;
 
     /**
+     * Revision calculator
+     *
+     * @var RevisionCalculator
+     */
+    private $revisionCalculator;
+
+    /**
      * __construct
      *
      * @param RevisionDiffer $revisionDiffer
      * @param ConflictDecider $conflictDecider
      * @return void
      */
-    public function __construct(RevisionDiffer $revisionDiffer, ConflictDecider $conflictDecider)
+    public function __construct(RevisionDiffer $revisionDiffer, ConflictDecider $conflictDecider, RevisionCalculator $revisionCalculator)
     {
         $this->revisionDiffer = $revisionDiffer;
         $this->conflictDecider = $conflictDecider;
+        $this->revisionCalculator = $revisionCalculator;
     }
 
     /**
@@ -233,26 +241,7 @@ class Storage
     public function storeSyncedChange(array $revisionDocument)
     {
         $id = substr($revisionDocument['_id'], strpos($revisionDocument['_id'], '/') + 1);
-        $revisionDocument['_rev'] = $this->getNextRevision($revisionDocument);
+        $revisionDocument['_rev'] = $this->revisionCalculator->getNextRevision($revisionDocument);
         $this->syncedRevisions[$id] = $revisionDocument;
-    }
-
-    /**
-     * getNextRevision
-     *
-     * @param mixed array $document
-     * @return void
-     */
-    protected function getNextRevision(array $document)
-    {
-        $revision = isset($document['_rev']) ? $document['_rev'] : '0-0';
-
-        $hash = md5(json_encode($document));
-        if (preg_match('(^(?P<base>\\d+)-)', $revision, $match)) {
-            $base = (int) $match['base'] + 1;
-            return "$base-$hash";
-        }
-
-        throw new \RuntimeException("Invalid revision format encountered: $revision");
     }
 }

@@ -12,12 +12,18 @@
         <service id="Kagency.CouchdbEndpoint.Storage" class="Kagency\CouchdbEndpoint\Storage">
             <argument type="service" id="Kagency.CouchdbEndpoint.RevisionDiffer" />
             <argument type="service" id="Kagency.CouchdbEndpoint.ConflictDecider" />
+            <argument type="service" id="Kagency.CouchdbEndpoint.RevisionCalculator" />
         </service>
 
         <service id="Kagency.CouchdbEndpoint.RevisionDiffer" class="Kagency\CouchdbEndpoint\RevisionDiffer">
+            <argument type="service" id="Kagency.CouchdbEndpoint.RevisionCalculator" />
         </service>
 
         <service id="Kagency.CouchdbEndpoint.ConflictDecider" class="Kagency\CouchdbEndpoint\ConflictDecider">
+            <argument type="service" id="Kagency.CouchdbEndpoint.RevisionCalculator" />
+        </service>
+
+        <service id="Kagency.CouchdbEndpoint.RevisionCalculator" class="Kagency\CouchdbEndpoint\RevisionCalculator">
         </service>
     </services>
 </container>

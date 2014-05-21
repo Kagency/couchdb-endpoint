@@ -5,6 +5,24 @@ namespace Kagency\CouchdbEndpoint;
 class RevisionDiffer
 {
     /**
+     * Revision calculator
+     *
+     * @var RevisionCalculator
+     */
+    private $revisionCalculator;
+
+    /**
+     * __construct
+     *
+     * @param RevisionCalculator $revisionCalculator
+     * @return void
+     */
+    public function __construct(RevisionCalculator $revisionCalculator)
+    {
+        $this->revisionCalculator = $revisionCalculator;
+    }
+
+    /**
      * Calculate revision diff
      *
      * Calculate the revision diff from a given set of missing revisions and
@@ -31,12 +49,12 @@ class RevisionDiffer
 
         $lowestMissingRevisionSequence = min(
             array_map(
-                array($this, 'getRevisionSequence'),
+                array($this->revisionCalculator, 'getSequence'),
                 $missingRevisions
             )
         );
 
-        if ($lowestMissingRevisionSequence <= $this->getRevisionSequence($lastRevision)) {
+        if ($lowestMissingRevisionSequence <= $this->revisionCalculator->getSequence($lastRevision)) {
             return new RevisionDiffer\Missing($missingRevisions);
         }
 
@@ -44,20 +62,5 @@ class RevisionDiffer
             array($lastRevision),
             $missingRevisions
         );
-    }
-
-    /**
-     * Get revision sequence
-     *
-     * @param string $revision
-     * @return int
-     */
-    protected function getRevisionSequence($revision)
-    {
-        if (preg_match('(^(?P<sequence>\\d+)-[a-f0-9]+$)', $revision, $match)) {
-            return (int) $match['sequence'];
-        }
-
-        return PHP_INT_MAX;
     }
 }
