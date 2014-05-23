@@ -88,17 +88,32 @@ class Storage
      * Get document
      *
      * @param string $document
-     * @return mixed
+     * @return string
      */
-    public function getDocument($document)
+    public function getDocument($documentId, $revision)
     {
-        if (!isset($this->data[$document])) {
-            throw new \OutOfBoundsException("No document with ID $document");
+        if (!isset($this->data[$documentId]) ||
+            !isset($this->data[$documentId][$revision])) {
+            throw new \OutOfBoundsException("No document with ID $document and revision $revision");
         }
 
-        $document = $this->data[$document];
-        unset($document['_conflict']);
-        return $document;
+        return $this->data[$documentId][$revision];
+    }
+
+    /**
+     * Get last revision
+     *
+     * @param string $documentId
+     * @return string
+     */
+    public function getLastRevision($documentId)
+    {
+        if (!isset($this->data[$documentId])) {
+            throw new \OutOfBoundsException("No document with ID $documentId");
+        }
+
+        $revisions = array_keys($this->data[$documentId]);
+        return end($revisions);
     }
 
     /**
@@ -123,17 +138,15 @@ class Storage
     protected function storeDocument(array $document)
     {
         $documentId = $document['_id'];
-        if (isset($this->data[$documentId])) {
-            $document = $this->conflictDecider->select($document, $this->data[$documentId]);
-        }
+        $revision = $document['_rev'];
 
-        $this->data[$document['_id']] = $document;
+        $this->data[$documentId][$revision] = $document;
 
         $sequence = count($this->updates) + 1;
         $this->updates[$sequence] = array(
-            'id' => $document['_id'],
+            'id' => $documentId,
             'sequence' => $sequence,
-            'revision' => $document['_rev'],
+            'revision' => $revision,
         );
     }
 
@@ -213,16 +226,16 @@ class Storage
     /**
      * Calculate revision diff
      *
-     * @param array $existingRevisions
+     * @param array $requestedRevisions
      * @return array
      */
-    public function calculateRevisionDiff(array $existingRevisions)
+    public function calculateRevisionDiff(array $requestedRevisions)
     {
         $missingRevisions = array();
-        foreach ($existingRevisions as $id => $revisions) {
-            $missingRevisions[$id] = $this->revisionDiffer->calculate(
+        foreach ($requestedRevisions as $documentId => $revisions) {
+            $missingRevisions[$documentId] = $this->revisionDiffer->calculate(
                 $revisions,
-                isset($this->data[$id]) ? $this->data[$id]['_rev'] : null
+                isset($this->data[$documentId]) ? array_keys($this->data[$documentId]) : array()
             );
         }
 

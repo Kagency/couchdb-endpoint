@@ -51,9 +51,29 @@ class Replicator
     public function getDocuments($documentId, $revision, $getRevisions, $getLatest, array $revisions)
     {
         try {
-            return array(
-                $this->storage->getDocument($documentId),
-            );
+            $documents = array();
+            if ($revision) {
+                return array(
+                    $this->storage->getDocument($documentId, $revision),
+                );
+            }
+
+            if ($revisions && $getLatest) {
+                $revisions[] = $this->storage->getLastRevision($documentId);
+                $revisions = array_unique($revisions);
+            }
+
+            if ($revisions) {
+                return array_map(
+                    function ($revision) use ($documentId) {
+                        return $this->storage->getDocument($documentId, $revision);
+                    },
+                    $revisions
+                );
+            }
+
+            $revision = $this->storage->getLastRevision($documentId);
+            return array($this->storage->getDocument($documentId, $revision));
         } catch (\OutOfBoundsException $e) {
             return new Replicator\Error('not_found', 'missing');
         }
