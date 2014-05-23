@@ -176,6 +176,7 @@ class Storage
         $filter = new Storage\ChangesFilter\Dispatcher(
             array(
                 new Storage\ChangesFilter\Since($since),
+                new Storage\ChangesFilter\ConflictMerger($this->revisionCalculator),
                 new Storage\ChangesFilter\Dublicates(),
             )
         );
