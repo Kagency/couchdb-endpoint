@@ -4,6 +4,7 @@ namespace Kagency\CouchdbEndpoint;
 
 class Document extends Struct
 {
+    // @codingStandardsIgnoreStart
     /**
      * Document ID
      *
@@ -17,6 +18,7 @@ class Document extends Struct
      * @var string
      */
     public $_rev;
+    // @codingStandardsIgnoreEnd
 
     /**
      * Allows to set new properties, except those reserved by CouchDB

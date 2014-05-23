@@ -53,8 +53,11 @@ class Storage
      * @param ConflictDecider $conflictDecider
      * @return void
      */
-    public function __construct(RevisionDiffer $revisionDiffer, ConflictDecider $conflictDecider, RevisionCalculator $revisionCalculator)
-    {
+    public function __construct(
+        RevisionDiffer $revisionDiffer,
+        ConflictDecider $conflictDecider,
+        RevisionCalculator $revisionCalculator
+    ) {
         $this->revisionDiffer = $revisionDiffer;
         $this->conflictDecider = $conflictDecider;
         $this->revisionCalculator = $revisionCalculator;
