@@ -143,10 +143,14 @@ class Storage
         $this->data[$documentId][$revision] = $document;
 
         $sequence = count($this->updates) + 1;
-        $this->updates[$sequence] = array(
-            'id' => $documentId,
-            'sequence' => $sequence,
-            'revision' => $revision,
+        $this->updates[$sequence] = new Storage\Update(
+            $sequence,
+            $documentId,
+            array(
+                array(
+                    'rev' => $revision,
+                )
+            )
         );
     }
 
@@ -169,58 +173,14 @@ class Storage
      */
     public function getChanges($since)
     {
-        $changes = array();
-        $sequenceMap = array();
-
-        foreach ($this->updates as $update) {
-            if ($update['sequence'] <= $since) {
-                continue;
-            }
-
-            $changes[] = $change = new Storage\Update(
-                $update['sequence'],
-                $update['id'],
-                array(
-                    array(
-                        'rev' => $update['revision'],
-                    ),
-                )
-            );
-
-            if (isset($this->data[$update['id']]) &&
-                isset($this->data[$update['id']]['_conflict'])) {
-                // @TODO: Not sure about the order here, but it works for now
-                array_unshift(
-                    $change->changes,
-                    array(
-                        'rev' => $this->data[$update['id']]['_conflict'],
-                    )
-                );
-            }
-
-            $sequenceMap[$update['id']][] = $update['sequence'];
-        }
-
-        // Filter changes, we do not need. Only replicate the last
-        // change for every document.
-        $sequenceMap = array_map(
-            function ($sequences) {
-                return array_slice($sequences, 0, -1);
-            },
-            $sequenceMap
-        );
-
-        return array_values(
-            array_filter(
-                $changes,
-                function ($change) use ($sequenceMap) {
-                    return !in_array(
-                        $change->seq,
-                        $sequenceMap[$change->id]
-                    );
-                }
+        $filter = new Storage\ChangesFilter\Dispatcher(
+            array(
+                new Storage\ChangesFilter\Since($since),
+                new Storage\ChangesFilter\Dublicates(),
             )
         );
+
+        return $filter->filterChanges($this->updates);
     }
 
     /**
