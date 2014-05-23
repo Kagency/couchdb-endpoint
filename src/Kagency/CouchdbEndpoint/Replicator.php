@@ -41,13 +41,19 @@ class Replicator
     /**
      * Get document
      *
-     * @param string $document
-     * @return mixed
+     * @param string $documentId
+     * @param mixed $revision
+     * @param bool $getRevisions
+     * @param bool $getLatest
+     * @param array $revisions
+     * @return array
      */
-    public function getDocument($document)
+    public function getDocuments($documentId, $revision, $getRevisions, $getLatest, array $revisions)
     {
         try {
-            return $this->storage->getDocument($document);
+            return array(
+                $this->storage->getDocument($documentId),
+            );
         } catch (\OutOfBoundsException $e) {
             return new Replicator\Error('not_found', 'missing');
         }

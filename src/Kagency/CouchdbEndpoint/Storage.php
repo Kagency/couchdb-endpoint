@@ -96,7 +96,9 @@ class Storage
             throw new \OutOfBoundsException("No document with ID $document");
         }
 
-        return $this->data[$document];
+        $document = $this->data[$document];
+        unset($document['_conflict']);
+        return $document;
     }
 
     /**
@@ -162,15 +164,27 @@ class Storage
                 continue;
             }
 
-            $changes[] = new Storage\Update(
+            $changes[] = $change = new Storage\Update(
                 $update['sequence'],
                 $update['id'],
                 array(
                     array(
                         'rev' => $update['revision'],
-                    )
+                    ),
                 )
             );
+
+            if (isset($this->data[$update['id']]) &&
+                isset($this->data[$update['id']]['_conflict'])) {
+                // @TODO: Not sure about the order here, but it works for now
+                array_unshift(
+                    $change->changes,
+                    array(
+                        'rev' => $this->data[$update['id']]['_conflict'],
+                    )
+                );
+            }
+
             $sequenceMap[$update['id']][] = $update['sequence'];
         }
 
