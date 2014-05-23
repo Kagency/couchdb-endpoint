@@ -119,7 +119,7 @@ class Storage
     /**
      * Store documents
      *
-     * @param array $documents
+     * @param Document[] $documents
      * @return void
      */
     public function storeDocuments(array $documents)
@@ -130,25 +130,25 @@ class Storage
     }
 
     /**
-     * storeDocument
+     * Store document
      *
-     * @param array $document
+     * @param Document $document
      * @return void
      */
-    protected function storeDocument(array $document)
+    protected function storeDocument(Document $document)
     {
-        $documentId = $document['_id'];
-        $revision = $document['_rev'];
+        $documentId = $document->_id;
+        $revision = $document->_rev;
 
-        $this->data[$documentId][$revision] = $document;
+        $this->data[$document->_id][$document->_rev] = $document;
 
         $sequence = count($this->updates) + 1;
         $this->updates[$sequence] = new Storage\Update(
             $sequence,
-            $documentId,
+            $document->_id,
             array(
                 array(
-                    'rev' => $revision,
+                    'rev' => $document->_rev,
                 )
             )
         );

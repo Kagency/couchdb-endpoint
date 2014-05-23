@@ -46,7 +46,7 @@ class Replicator
      * @param bool $getRevisions
      * @param bool $getLatest
      * @param array $revisions
-     * @return array
+     * @return Document[]
      */
     public function getDocuments($documentId, $revision, $getRevisions, $getLatest, array $revisions)
     {
@@ -116,7 +116,14 @@ class Replicator
     public function insertBulk(array $updates)
     {
         $this->storage->updateDocuments($updates['new_edits'] ?: array());
-        $this->storage->storeDocuments($updates['docs'] ?: array());
+        $this->storage->storeDocuments(
+            array_map(
+                function (array $document) {
+                    return new Document($document);
+                },
+                $updates['docs'] ?: array()
+            )
+        );
     }
 
     /**
