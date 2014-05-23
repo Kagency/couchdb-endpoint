@@ -52,13 +52,20 @@ class Controller
      */
     public function getDocument(Request $request)
     {
+        $documents = $this->replicator->getDocuments(
+            $request->get('document'),
+            $request->get('rev', null),
+            $request->get('revs', false),
+            json_decode($request->get('latest', 'false')),
+            json_decode($request->get('open_revs', '[]'))
+        );
+
         return new MultipartMixed(
-            array(
-                new JsonResponse(
-                    $this->replicator->getDocument(
-                        $request->get('document')
-                    )
-                ),
+            array_map(
+                function ($document) {
+                    return new JsonResponse($document);
+                },
+                $documents
             )
         );
     }
