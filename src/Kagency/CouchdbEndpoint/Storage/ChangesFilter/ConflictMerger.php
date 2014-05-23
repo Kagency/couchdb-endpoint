@@ -37,7 +37,7 @@ class ConflictMerger extends ChangesFilter
         $sequenceMap = array();
         foreach ($changes as $index => $update) {
             $revisionSequence = $this->revisionCalculator->getSequence(
-                $update->changes[0]['rev']
+                $update->changes[0]->rev
             );
             $sequenceMap[$update->id][$revisionSequence][] = $index;
         }

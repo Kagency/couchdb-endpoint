@@ -144,9 +144,7 @@ class Storage
             $sequence,
             $document->_id,
             array(
-                array(
-                    'rev' => $document->_rev,
-                )
+                new Storage\Revision($document->_rev),
             )
         );
     }
