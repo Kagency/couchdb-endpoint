@@ -137,9 +137,6 @@ class Storage
      */
     protected function storeDocument(Document $document)
     {
-        $documentId = $document->_id;
-        $revision = $document->_rev;
-
         $this->data[$document->_id][$document->_rev] = $document;
 
         $sequence = count($this->updates) + 1;
