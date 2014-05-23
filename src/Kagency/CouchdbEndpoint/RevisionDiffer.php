@@ -26,24 +26,20 @@ class RevisionDiffer
      * Calculate revision diff
      *
      * Calculate the revision diff from a given set of missing revisions and
-     * the optional last revision currently stored.
+     * the locally stored revisiosns.
      *
-     * Currently we never have multiple "old" revisions available, so that we
-     * can only like an always compacted CouchDB. This should be sufficient,
-     * but it might be sensible to implement this in a different way for a
-     * different storage.
-     *
-     * @param array $missingRevision
-     * @param string $lastRevision
+     * @param array $requestedRevisions
+     * @param array $localRevisions
      * @return RevisionDiffer\Missing
      */
-    public function calculate(array $missingRevisions, $lastRevision)
+    public function calculate(array $requestedRevisions, array $localRevisions)
     {
-        if ($missingRevisions === array($lastRevision)) {
+        $missingRevisions = array_diff($requestedRevisions, $localRevisions);
+        if (!count($missingRevisions)) {
             return null;
         }
 
-        if (!$lastRevision) {
+        if (!count($localRevisions)) {
             return new RevisionDiffer\Missing($missingRevisions);
         }
 
@@ -54,12 +50,19 @@ class RevisionDiffer
             )
         );
 
-        if ($lowestMissingRevisionSequence <= $this->revisionCalculator->getSequence($lastRevision)) {
+        $highestLocalRevisionSequence = max(
+            array_map(
+                array($this->revisionCalculator, 'getSequence'),
+                $localRevisions
+            )
+        );
+
+        if ($lowestMissingRevisionSequence <= $highestLocalRevisionSequence) {
             return new RevisionDiffer\Missing($missingRevisions);
         }
 
         return new RevisionDiffer\PotentialAncestor(
-            array($lastRevision),
+            array(end($localRevisions)),
             $missingRevisions
         );
     }
