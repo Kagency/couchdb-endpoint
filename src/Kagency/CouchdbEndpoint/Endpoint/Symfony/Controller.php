@@ -163,7 +163,7 @@ class Controller
 
         return new JsonResponse(
             $this->replicator->getChanges(
-                $request->get('since')
+                $request->get('since', 0)
             ),
             200
         );
