@@ -9,6 +9,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Class: Controller
+ *
+ * Symfony2 specific controller
+ *
+ * This class should not do ANYTHING besides mapping the incoming request to
+ * replicator calls and creating the outgoing response. There MUST NOT be any
+ * logic besides that.
+ *
+ * @version $Revision$
+ */
 class Controller
 {
     /**
