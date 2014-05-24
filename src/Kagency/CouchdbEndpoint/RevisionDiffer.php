@@ -61,8 +61,16 @@ class RevisionDiffer
             return new RevisionDiffer\Missing($missingRevisions);
         }
 
+        $potentialAncestors = array_filter(
+            $localRevisions,
+            function ($revision) use ($highestLocalRevisionSequence) {
+                return $this->revisionCalculator->getSequence($revision) === $highestLocalRevisionSequence;
+            }
+        );
+        sort($potentialAncestors);
+
         return new RevisionDiffer\PotentialAncestor(
-            array(end($localRevisions)),
+            $potentialAncestors,
             $missingRevisions
         );
     }
