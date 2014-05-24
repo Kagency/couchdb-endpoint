@@ -25,45 +25,36 @@ class ConflictDecider
     /**
      * Select conflict winner
      *
-     * @param array $doc1
-     * @param array $doc2
-     * @return array
+     * @param Document $new
+     * @param Document $existing
+     * @return void
      */
-    public function select(array $doc1, array $doc2)
+    public function select(Document $new, Document $existing)
     {
-        $doc1Sequence = $this->revisionCalculator->getSequence($doc1['_rev']);
-        $doc2Sequence = $this->revisionCalculator->getSequence($doc2['_rev']);
+        $newSize = strlen(json_encode($new));
+        $existingSize = strlen(json_encode($existing));
 
-        // We assume there is a clear winner in this case. This might not be
-        // correct, if one endpoint had more changes then the other other one.
-        if ($doc1Sequence !== $doc2Sequence) {
-            return $doc1Sequence > $doc2Sequence ? $doc1 : $doc2;
-        }
-
-        // We enter conflict zone:
-        $doc1Size = strlen(json_encode($doc1));
-        $doc2Size = strlen(json_encode($doc2));
-
-        if ($doc1Size !== $doc2Size) {
+        if ($newSize !== $existingSize) {
             return $this->flagWinner(
-                $doc1Size > $doc2Size ? $doc1 : $doc2,
-                $doc1Size > $doc2Size ? $doc2 : $doc1
+                $newSize > $existingSize ? $new : $existing,
+                $newSize > $existingSize ? $existing : $new
             );
         }
 
         // @TODO: Just select one of the documents randomly. This requires more
         // checking.
-        return $this->flagWinner($doc1, $doc2);
+        return $this->flagWinner($new, $existing);
     }
 
     /**
-     * Flag and return winner document
+     * Flag winner document
      *
-     * @param array $winner
-     * @param array $looser
-     * @return array
+     * @param Document $winner
+     * @param Document $looser
+     * @return void
      */
-    protected function flagWinner(array $winner, array $looser)
+    protected function flagWinner(Document $winner, Document $looser)
     {
+        $looser->_conflict = true;
     }
 }

@@ -100,7 +100,12 @@ class Storage
             throw new \OutOfBoundsException("No document with ID $document and revision $revision");
         }
 
-        return $this->data[$documentId][$revision];
+        $document = clone $this->data[$documentId][$revision];
+
+        if (isset($document->_conflict)) {
+            unset($document->_conflict);
+        }
+        return $document;
     }
 
     /**
@@ -111,12 +116,35 @@ class Storage
      */
     public function getLastRevision($documentId)
     {
-        if (!isset($this->data[$documentId])) {
+        if (!$revision = $this->getLastRevisionSilent($documentId)) {
             throw new \OutOfBoundsException("No document with ID $documentId");
         }
 
+        return $revision;
+    }
+
+    /**
+     * Get last revision
+     *
+     * Returns null, if no revision is available.
+     *
+     * @param string $documentId
+     * @return mixed
+     */
+    protected function getLastRevisionSilent($documentId)
+    {
+        if (!isset($this->data[$documentId])) {
+            return null;
+        }
+
         $revisions = array_keys($this->data[$documentId]);
-        return end($revisions);
+        foreach (array_reverse($revisions) as $revision) {
+            if (!isset($this->data[$documentId][$revision]->_conflict)) {
+                return $revision;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -140,7 +168,13 @@ class Storage
      */
     protected function storeDocument(Document $document)
     {
+        $lastRevision = $this->getLastRevisionSilent($document->_id);
         $this->data[$document->_id][$document->_rev] = $document;
+
+        if ($this->revisionCalculator->getSequence($document->_rev) ===
+            $this->revisionCalculator->getSequence($lastRevision)) {
+            $this->conflictDecider->select($document, $this->data[$document->_id][$lastRevision]);
+        }
 
         $sequence = count($this->updates) + 1;
         $this->updates[$sequence] = new Storage\Update(

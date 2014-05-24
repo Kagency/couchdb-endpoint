@@ -58,11 +58,6 @@ class Replicator
                 );
             }
 
-            if ($revisions && $getLatest) {
-                $revisions[] = $this->storage->getLastRevision($documentId);
-                $revisions = array_unique($revisions);
-            }
-
             if ($revisions) {
                 return array_map(
                     function ($revision) use ($documentId) {

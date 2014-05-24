@@ -30,7 +30,7 @@ class Document extends Struct
     public function __set($name, $value)
     {
         if ((strpos($name, '_') === 0) &&
-            !in_array($name, array('_revisions'))) {
+            !in_array($name, array('_revisions', '_conflict'))) {
             throw new \UnexpectedValueException("Invalid potentially reserved property $name");
         }
 
