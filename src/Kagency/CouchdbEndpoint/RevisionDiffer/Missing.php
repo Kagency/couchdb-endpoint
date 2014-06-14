@@ -2,9 +2,9 @@
 
 namespace Kagency\CouchdbEndpoint\RevisionDiffer;
 
-use Kagency\CouchdbEndpoint\Struct;
+use Kore\DataObject\DataObject;
 
-class Missing extends Struct
+class Missing extends DataObject
 {
     /**
      * Missing revision

@@ -2,14 +2,14 @@
 
 namespace Kagency\CouchdbEndpoint\Storage;
 
-use Kagency\CouchdbEndpoint\Struct;
+use Kore\DataObject\DataObject;
 
 /**
  * Class: Update
  *
  * @version $Revision$
  */
-class Update extends Struct
+class Update extends DataObject
 {
     /**
      * Sequence

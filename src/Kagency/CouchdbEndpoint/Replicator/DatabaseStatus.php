@@ -2,7 +2,7 @@
 
 namespace Kagency\CouchdbEndpoint\Replicator;
 
-use Kagency\CouchdbEndpoint\Struct;
+use Kore\DataObject\DataObject;
 
 /**
  * Class: DatabaseStatus
@@ -14,7 +14,7 @@ use Kagency\CouchdbEndpoint\Struct;
  *
  * @version $Revision$
  */
-class DatabaseStatus extends Struct
+class DatabaseStatus extends DataObject
 {
     public $db_name = null;
     public $doc_count = 0;

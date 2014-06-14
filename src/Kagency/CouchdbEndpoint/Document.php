@@ -2,7 +2,9 @@
 
 namespace Kagency\CouchdbEndpoint;
 
-class Document extends Struct
+use Kore\DataObject\DataObject;
+
+class Document extends DataObject
 {
     // @codingStandardsIgnoreStart
     /**

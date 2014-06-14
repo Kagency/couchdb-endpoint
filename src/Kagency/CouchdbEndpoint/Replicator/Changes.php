@@ -2,14 +2,14 @@
 
 namespace Kagency\CouchdbEndpoint\Replicator;
 
-use Kagency\CouchdbEndpoint\Struct;
+use Kore\DataObject\DataObject;
 
 /**
  * Class: Changes
  *
  * @version $Revision$
  */
-class Changes extends Struct
+class Changes extends DataObject
 {
     public $results = null;
     public $last_seq = 0;

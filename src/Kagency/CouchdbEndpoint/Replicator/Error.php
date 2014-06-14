@@ -2,7 +2,7 @@
 
 namespace Kagency\CouchdbEndpoint\Replicator;
 
-use Kagency\CouchdbEndpoint\Struct;
+use Kore\DataObject\DataObject;
 
 /**
  * Class: Error
@@ -11,7 +11,7 @@ use Kagency\CouchdbEndpoint\Struct;
  *
  * @version $Revision$
  */
-class Error
+class Error extends DataObject
 {
     /**
      * Error type

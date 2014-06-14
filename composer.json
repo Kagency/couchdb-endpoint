@@ -18,7 +18,8 @@
         "symfony/routing": "@stable",
         "symfony/dependency-injection": "@stable",
         "symfony/config": "@stable",
-        "symfony/yaml": "@stable"
+        "symfony/yaml": "@stable",
+        "kore/data-object": "@stable"
     },
     "require-dev": {
         "pdepend/pdepend": "@stable",

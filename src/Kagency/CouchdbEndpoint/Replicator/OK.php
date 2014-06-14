@@ -2,7 +2,7 @@
 
 namespace Kagency\CouchdbEndpoint\Replicator;
 
-use Kagency\CouchdbEndpoint\Struct;
+use Kore\DataObject\DataObject;
 
 /**
  * Class: OK
@@ -11,7 +11,7 @@ use Kagency\CouchdbEndpoint\Struct;
  *
  * @version $Revision$
  */
-class OK extends Struct
+class OK extends DataObject
 {
     /**
      * Everything is OK

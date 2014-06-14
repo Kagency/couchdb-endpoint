@@ -1,10 +1,45 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "f516595e7dba86ffdc9eed3f9e7aed53",
+    "hash": "1ed23300dbfac669e9659502c326c166",
     "packages": [
+        {
+            "name": "kore/data-object",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kore/DataObject.git",
+                "reference": "f076476412f740dc439f6584c83dd3cf78e3032c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kore/DataObject/zipball/f076476412f740dc439f6584c83dd3cf78e3032c",
+                "reference": "f076476412f740dc439f6584c83dd3cf78e3032c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "pdepend/pdepend": "@stable",
+                "phpmd/phpmd": "@stable",
+                "phpunit/phpunit": "@stable",
+                "sebastian/phpcpd": "@stable",
+                "squizlabs/php_codesniffer": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Kore": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Simple base class for data objects.",
+            "time": "2014-06-14 10:48:42"
+        },
         {
             "name": "psr/log",
             "version": "1.0.0",
@@ -1625,9 +1660,7 @@
             "time": "2014-02-19 00:20:43"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "symfony/http-kernel": 0,
@@ -1635,6 +1668,7 @@
         "symfony/dependency-injection": 0,
         "symfony/config": 0,
         "symfony/yaml": 0,
+        "kore/data-object": 0,
         "pdepend/pdepend": 0,
         "phpmd/phpmd": 0,
         "phpunit/phpunit": 0,
@@ -1642,10 +1676,6 @@
         "squizlabs/php_codesniffer": 0,
         "phuedx/tnetstring": 20
     },
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "platform": [],
+    "platform-dev": []
 }
