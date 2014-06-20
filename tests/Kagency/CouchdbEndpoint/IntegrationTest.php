@@ -5,23 +5,9 @@ namespace Kagency\CouchdbEndpoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Interaction {
-    public $request;
-    public $response;
-
-    /**
-     * __construct
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return void
-     */
-    public function __construct(Request $request, Response $response)
-    {
-        $this->request = $request;
-        $this->response = $response;
-    }
-}
+use Kagency\HttpReplay\ResponseFilter;
+use Kagency\HttpReplay\Reader;
+use Kagency\HttpReplay\MessageHandler;
 
 /**
  * @group integration
@@ -52,31 +38,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     protected function getRequests($finalFixtureFile)
     {
         $aggregate = array();
-        $decoder = new \TNetstring_Decoder();
+        $reader = new Reader\MitmDump(new MessageHandler\Symfony2());
         foreach (glob(__DIR__ . '/_fixtures/*.tns') as $fixtureFile) {
             $aggregate = array_merge(
                 $aggregate,
-                array_map(
-                    function (array $interaction) {
-                        return new Interaction(
-                            Request::create(
-                                $interaction['request']['path'],
-                                $interaction['request']['method'],
-                                array(),
-                                array(),
-                                array(),
-                                $this->mapHeaders($interaction['request']['headers']),
-                                $interaction['request']['content']
-                            ),
-                            Response::create(
-                                $interaction['response']['content'],
-                                $interaction['response']['code'],
-                                $this->mapHeaders($interaction['response']['headers'], '')
-                            )
-                        );
-                    },
-                    $decoder->decode(file_get_contents($fixtureFile))
-                )
+                $reader->readInteractions($fixtureFile)
             );
 
             if (pathinfo($fixtureFile, PATHINFO_FILENAME) === $finalFixtureFile) {
@@ -88,30 +54,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Map headers
-     *
-     * Maps HTTP headers from the real names to the naems PHP would use in the
-     * SERVER array, so that Symfony2 can map them back.
-     *
-     * @param array $headers
-     * @return array
-     */
-    protected function mapHeaders(array $headers, $prefix = 'HTTP_')
-    {
-        $phpHeaders = array();
-        foreach ($headers as $headerPair) {
-            list($name, $value) = $headerPair;
-            $phpHeaders[$prefix . str_replace('-', '_', strtoupper($name))] = $value;
-        }
-
-        return $phpHeaders;
-    }
-
-    /**
      * @dataProvider getFixtures
      */
     public function testReplayReplication($fixtureFile)
     {
+        $filter = $this->getRequestFilter();
+        $messageHandler = new MessageHandler\Symfony2();
+
         $dumps = $this->getRequests($fixtureFile);
         $container = new Container();
         foreach ($dumps as $nr => $dump) {
@@ -119,102 +68,47 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             $expectedResponse = $dump->response;
 
             $endpoint = new Endpoint\Symfony($container, "master");
-            $response = $endpoint->runRequest($request);
+            $actualResponse = $endpoint->runRequest($request);
 
             $this->assertEquals(
-                $this->simplifyResponse($request->getPathInfo(), $expectedResponse),
-                $this->simplifyResponse($request->getPathInfo(), $response),
+                $filter->filterResponse($messageHandler->simplifyResponse($request, $expectedResponse)),
+                $filter->filterResponse($messageHandler->simplifyResponse($request, $actualResponse)),
                 "Failed to respond to #$nr: $request"
             );
         }
     }
 
     /**
-     * Simplify response
+     * Get request filter
      *
-     * simplifies responses for easier comparision. Also strips away headers,
-     * which are not relevant to us.
-     *
-     * @param string $path
-     * @param Response $response
-     * @return array
+     * @return ResponseFilter
      */
-    protected function simplifyResponse($path, Response $response)
+    protected function getRequestFilter()
     {
-        $headerBlackList = array(
-            'server' => true,
-            'date' => true,
-            'content-length' => true,
-            'cache-control' => true,
-            'location' => true,
-            'etag' => true,
-            'transfer-encoding' => true,
-        );
-
-        $headers = array();
-        foreach ($response->headers as $name => $value) {
-            if (isset($headerBlackList[$name])) {
-                continue;
-            }
-
-            $headers[$name] = reset($value);
-        }
-
-        switch (true) {
-            case $response->headers->get('Content-Type') === 'application/json':
-                $body = json_decode($response->getContent(), true);
-                break;
-
-            case preg_match(
-                '(^multipart/mixed; boundary="(?P<boundary>[a-f0-9]+)"$)',
-                $response->headers->get('Content-Type'),
-                $match
-            ):
-                $body = str_replace($match['boundary'], '<boundary>', $response->getContent());
-                $headers['content-type'] = str_replace($match['boundary'], '<boundary>', $headers['content-type']);
-                break;
-        }
-
-        return array(
-            'status' => $response->getStatusCode(),
-            'headers' => $headers,
-            'content' => $this->filterResponseData($path, $body),
-        );
-    }
-
-    /**
-     * Filter response data
-     *
-     * Based on the path, return filtered response data. Some bits of the data
-     * are just useless to compare.
-     *
-     * @param string $path
-     * @param mixed $data
-     * @return array
-     */
-    protected function filterResponseData($path, $data)
-    {
-        switch (true) {
-            case is_array($data) && $path === '/master/':
-                return array_diff_key(
-                    $data,
-                    array_flip(array('data_size', 'disk_size', 'instance_start_time', 'disk_format_version'))
-                );
-
-            case is_array($data) && $path === '/master/_ensure_full_commit':
-                return array_diff_key(
-                    $data,
-                    array_flip(array('instance_start_time'))
-                );
-
-            case is_array($data) && preg_match('(^/master/_local/[a-f0-9]{32}$)', $path):
-                return array_diff_key(
-                    $data,
-                    array_flip(array('rev', '_rev'))
-                );
-
-            default:
-                return $data;
-        }
+        return new ResponseFilter\Dispatcher(array(
+            new ResponseFilter\Json(),
+            new ResponseFilter\MultipartMixed(),
+            new ResponseFilter\Headers(array(
+                'server',
+                'date',
+                'content-length',
+                'cache-control',
+                'location',
+                'etag',
+                'transfer-encoding',
+            )),
+            new ResponseFilter\ConditionalPathRegexp(
+                '(^/master/$)',
+                new ResponseFilter\JsonFilter(array('data_size', 'disk_size', 'instance_start_time', 'disk_format_version'))
+            ),
+            new ResponseFilter\ConditionalPathRegexp(
+                '(^/master/_ensure_full_commit$)',
+                new ResponseFilter\JsonFilter(array('instance_start_time'))
+            ),
+            new ResponseFilter\ConditionalPathRegexp(
+                '(^/master/_local/[a-f0-9]{32}$)',
+                new ResponseFilter\JsonFilter(array('rev', '_rev'))
+            ),
+        ));
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1ed23300dbfac669e9659502c326c166",
+    "hash": "3073a74e5eafab45e79249ed3b4fd864",
     "packages": [
         {
             "name": "kore/data-object",
@@ -596,6 +596,45 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "kagency/http-replay",
+            "version": "0.1-alpha",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kagency/http-replay.git",
+                "reference": "2843b9215d5e045176de77b29fe57d1f00156528"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kagency/http-replay/zipball/2843b9215d5e045176de77b29fe57d1f00156528",
+                "reference": "2843b9215d5e045176de77b29fe57d1f00156528",
+                "shasum": ""
+            },
+            "require": {
+                "kore/data-object": "@stable",
+                "phuedx/tnetstring": "@dev",
+                "symfony/http-kernel": "@stable"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "@stable",
+                "phpmd/phpmd": "@stable",
+                "phpunit/phpunit": "@stable",
+                "sebastian/phpcpd": "@stable",
+                "squizlabs/php_codesniffer": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Kagency": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Library to replay and compare HTTP requets and responses",
+            "time": "2014-06-19 17:50:56"
+        },
         {
             "name": "pdepend/pdepend",
             "version": "1.1.3",
@@ -1674,7 +1713,8 @@
         "phpunit/phpunit": 0,
         "sebastian/phpcpd": 0,
         "squizlabs/php_codesniffer": 0,
-        "phuedx/tnetstring": 20
+        "phuedx/tnetstring": 20,
+        "kagency/http-replay": 15
     },
     "platform": [],
     "platform-dev": []
