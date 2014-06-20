@@ -598,16 +598,16 @@
     "packages-dev": [
         {
             "name": "kagency/http-replay",
-            "version": "0.1-alpha",
+            "version": "0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kagency/http-replay.git",
-                "reference": "2843b9215d5e045176de77b29fe57d1f00156528"
+                "reference": "aa22239ab1a96f7b83fef61a60741dbfce287053"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kagency/http-replay/zipball/2843b9215d5e045176de77b29fe57d1f00156528",
-                "reference": "2843b9215d5e045176de77b29fe57d1f00156528",
+                "url": "https://api.github.com/repos/Kagency/http-replay/zipball/aa22239ab1a96f7b83fef61a60741dbfce287053",
+                "reference": "aa22239ab1a96f7b83fef61a60741dbfce287053",
                 "shasum": ""
             },
             "require": {
@@ -633,7 +633,7 @@
                 "MIT"
             ],
             "description": "Library to replay and compare HTTP requets and responses",
-            "time": "2014-06-19 17:50:56"
+            "time": "2014-06-20 06:39:44"
         },
         {
             "name": "pdepend/pdepend",
