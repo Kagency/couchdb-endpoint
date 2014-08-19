@@ -2,6 +2,15 @@
 
 namespace Kagency\CouchdbEndpoint;
 
+/**
+ * Abstract storage base
+ *
+ * Base class for storage implementations. When implementing a custom storage
+ * you probably want to use RevisionDiffer, ConflictDecider and
+ * RevisionCalculator.
+ *
+ * @version $Revision$
+ */
 abstract class Storage
 {
     /**
