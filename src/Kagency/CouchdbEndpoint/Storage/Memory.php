@@ -9,10 +9,20 @@ use Kagency\CouchdbEndpoint\ConflictDecider;
 use Kagency\CouchdbEndpoint\RevisionCalculator;
 use Kagency\CouchdbEndpoint\Document;
 
+/**
+ * In-Memory storage
+ *
+ * This is a storage implementation which only stores the documents in PHP
+ * variables, aka: in memory.
+ *
+ * This class is only supposed to be used in tests.
+ *
+ * @version $Revision$
+ */
 class Memory extends Storage
 {
     /**
-     * data = array()
+     * Data
      *
      * @var array
      */
