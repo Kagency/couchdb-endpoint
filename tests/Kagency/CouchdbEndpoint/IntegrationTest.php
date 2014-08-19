@@ -63,11 +63,12 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
         $dumps = $this->getRequests($fixtureFile);
         $container = new Container();
+        $replicator = $container->get('Kagency.CouchdbEndpoint.Replicator.Test');
         foreach ($dumps as $nr => $dump) {
             $request = $dump->request;
             $expectedResponse = $dump->response;
 
-            $endpoint = new Endpoint\Symfony($container, "master");
+            $endpoint = new Endpoint\Symfony($replicator, "master");
             $actualResponse = $endpoint->runRequest($request);
 
             $this->assertEquals(

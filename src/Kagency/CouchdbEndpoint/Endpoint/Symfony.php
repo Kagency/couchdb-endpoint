@@ -3,7 +3,7 @@
 namespace Kagency\CouchdbEndpoint\Endpoint;
 
 use Kagency\CouchdbEndpoint\Endpoint;
-use Kagency\CouchdbEndpoint\Container;
+use Kagency\CouchdbEndpoint\Replicator;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,23 +18,21 @@ class Symfony extends Endpoint
     protected $application;
 
     /**
-     * Dependency Injection Container
+     * Replicator
      *
-     * @var Container
+     * @var Replicator
      */
-    protected $container;
+    protected $replicator;
 
     /**
      * __construct
      *
      * @return void
      */
-    public function __construct(Container $container, $name = "storage")
+    public function __construct(Replicator $replicator, $name = "storage")
     {
         $this->application = new Symfony\Application();
-        $controller = new Symfony\Controller(
-            $container->get('Kagency.CouchdbEndpoint.Replicator')
-        );
+        $controller = new Symfony\Controller($replicator);
 
         $this->application->addRoute('GET', "/{database}/", array($controller, 'getDatabaseStatus'));
         $this->application->addRoute('GET', "/{database}/_local/{revision}", array($controller, 'hasChange'));
