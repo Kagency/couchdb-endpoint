@@ -6,10 +6,10 @@
 
     <services>
         <service id="Kagency.CouchdbEndpoint.Replicator" class="Kagency\CouchdbEndpoint\Replicator">
-            <argument type="service" id="Kagency.CouchdbEndpoint.Storage" />
+            <argument type="service" id="Kagency.CouchdbEndpoint.Storage.Memory" />
         </service>
 
-        <service id="Kagency.CouchdbEndpoint.Storage" class="Kagency\CouchdbEndpoint\Storage">
+        <service id="Kagency.CouchdbEndpoint.Storage.Memory" class="Kagency\CouchdbEndpoint\Storage\Memory">
             <argument type="service" id="Kagency.CouchdbEndpoint.RevisionDiffer" />
             <argument type="service" id="Kagency.CouchdbEndpoint.ConflictDecider" />
             <argument type="service" id="Kagency.CouchdbEndpoint.RevisionCalculator" />
