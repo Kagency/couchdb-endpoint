@@ -4,8 +4,25 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="pdo.dsn"></parameter>
+        <parameter key="pdo.user"></parameter>
+        <parameter key="pdo.password"></parameter>
+    </parameters>
+
     <services>
         <service id="Kagency.CouchdbEndpoint.Replicator" class="Kagency\CouchdbEndpoint\Replicator">
+            <argument type="service" id="Kagency.CouchdbEndpoint.Storage.PDO" />
+        </service>
+
+        <service id="Kagency.CouchdbEndpoint.Storage.PDO" class="Kagency\CouchdbEndpoint\Storage\MySQL">
+            <argument type="service" id="Kagency.CouchdbEndpoint.RevisionDiffer" />
+            <argument type="service" id="Kagency.CouchdbEndpoint.ConflictDecider" />
+            <argument type="service" id="Kagency.CouchdbEndpoint.RevisionCalculator" />
+            <argument type="service" id="PDO" />
+        </service>
+
+        <service id="Kagency.CouchdbEndpoint.Replicator.Test" class="Kagency\CouchdbEndpoint\Replicator">
             <argument type="service" id="Kagency.CouchdbEndpoint.Storage.Memory" />
         </service>
 
@@ -24,6 +41,17 @@
         </service>
 
         <service id="Kagency.CouchdbEndpoint.RevisionCalculator" class="Kagency\CouchdbEndpoint\RevisionCalculator">
+        </service>
+
+        <service id="PDO" class="PDO">
+            <argument>%pdo.dsn%</argument>
+            <argument>%pdo.user%</argument>
+            <argument>%pdo.password%</argument>
+
+            <call method="setAttribute">
+                <argument type="constant">\PDO::ATTR_ERRMODE</argument>
+                <argument type="constant">\PDO::ERRMODE_EXCEPTION</argument>
+            </call>
         </service>
     </services>
 </container>
