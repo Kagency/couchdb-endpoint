@@ -280,5 +280,7 @@ class Memory extends Storage
         $id = substr($revisionDocument['_id'], strpos($revisionDocument['_id'], '/') + 1);
         $revisionDocument['_rev'] = $this->revisionCalculator->getNextRevision($revisionDocument);
         $this->syncedRevisions[$id] = $revisionDocument;
+
+        return $revisionDocument['_rev'];
     }
 }

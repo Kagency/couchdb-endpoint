@@ -86,8 +86,10 @@ abstract class Storage
     /**
      * Store synced change
      *
+     * Returns the revision of the created document.
+     *
      * @param array $revisionDocument
-     * @return void
+     * @return string
      */
     abstract public function storeSyncedChange(array $revisionDocument);
 }

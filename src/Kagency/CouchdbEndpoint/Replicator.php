@@ -119,6 +119,8 @@ class Replicator
                 $updates['docs'] ?: array()
             )
         );
+
+        return array();
     }
 
     /**
@@ -142,7 +144,7 @@ class Replicator
      */
     public function commit()
     {
-        return new Replicator\OK();
+        return new Replicator\Commit();
     }
 
     /**
@@ -153,10 +155,9 @@ class Replicator
      */
     public function storeSyncedChange(array $revisionDocument)
     {
-        $this->storage->storeSyncedChange($revisionDocument);
         return new Replicator\DocumentCreated(
             $revisionDocument['_id'],
-            1
+            $this->storage->storeSyncedChange($revisionDocument)
         );
     }
 }
