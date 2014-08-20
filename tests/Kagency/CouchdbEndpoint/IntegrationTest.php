@@ -9,11 +9,15 @@ use Kagency\HttpReplay\ResponseFilter;
 use Kagency\HttpReplay\Reader;
 use Kagency\HttpReplay\MessageHandler;
 
-/**
- * @group integration
- */
-class IntegrationTest extends \PHPUnit_Framework_TestCase
+abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Get replicator
+     *
+     * @return Replicator
+     */
+    abstract protected function getReplicator();
+
     /**
      * Get fixtures
      *
@@ -62,8 +66,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $messageHandler = new MessageHandler\Symfony2();
 
         $dumps = $this->getRequests($fixtureFile);
-        $container = new Container();
-        $replicator = $container->get('Kagency.CouchdbEndpoint.Replicator.Test');
+        $replicator = $this->getReplicator();
         foreach ($dumps as $nr => $dump) {
             $request = $dump->request;
             $expectedResponse = $dump->response;
