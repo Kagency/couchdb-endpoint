@@ -10,12 +10,13 @@ use Kagency\CouchdbEndpoint\RevisionCalculator;
 use Kagency\CouchdbEndpoint\Document;
 
 /**
- * In-Memory storage
+ * MySQL storage
  *
- * This is a storage implementation which only stores the documents in PHP
- * variables, aka: in memory.
+ * This is an experimental implementation of a MySQL storage. It basically just
+ * stores the documents as serialized documents in one dumb table.
  *
- * This class is only supposed to be used in tests.
+ * To make this usable the storage should allow to store certain docuemnts in
+ * related tables.
  *
  * @version $Revision$
  */
