@@ -15,12 +15,12 @@ class ErrorController
      * @param \Exception $exception
      * @return JsonResponse
      */
-    public function exception(\Exception $exception)
+    public function exception($exception)
     {
         return new JsonResponse(
             new Replicator\Error(
                 'internal',
-                (string) $exception
+                $exception->getMessage()
             ),
             500
         );
