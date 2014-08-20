@@ -272,8 +272,10 @@ class Memory extends Storage
     /**
      * Store synced change
      *
+     * Returns the revision of the created document.
+     *
      * @param array $revisionDocument
-     * @return void
+     * @return string
      */
     public function storeSyncedChange(array $revisionDocument)
     {
