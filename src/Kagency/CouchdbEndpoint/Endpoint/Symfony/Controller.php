@@ -63,7 +63,7 @@ class Controller
      */
     public function getDocument(Request $request)
     {
-        $documents = $this->replicator->getDocuments(
+        $result = $this->replicator->getDocuments(
             $request->get('document'),
             $request->get('rev', null),
             $request->get('revs', false),
@@ -71,12 +71,16 @@ class Controller
             json_decode($request->get('open_revs', '[]'))
         );
 
+        if ($result instanceof Replicator\Error) {
+            return new JsonResponse($result, 404);
+        }
+
         return new MultipartMixed(
             array_map(
                 function ($document) {
                     return new JsonResponse($document);
                 },
-                $documents
+                $result
             )
         );
     }
