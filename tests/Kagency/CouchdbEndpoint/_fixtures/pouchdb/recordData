@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../functions.php';
+
+echo "Start the splitting proxy using `node split_proxy.js`", PHP_EOL;
+echo "Start the Kagency UI app by running `ant serve` in the respective folder.", PHP_EOL;
+
+$host = parse_url(isset($argv[1]) ? $argv[1] : 'http://localhost:5984/');
+
+try {http_request($host, '/api', 'DELETE');} catch (Exception $e) {}
+http_request($host, '/api', 'PUT');
+
+// Basic document replication
+$test1 = json_decode(http_request($host, '/api/test-1', 'PUT', json_encode(array(
+    'data' => 'Version 1',
+))));
+
+record("01_replicate_data_from.tns");
+
+function record($name)
+{
+    echo "Record now: `mitmdump -P http://localhost:5984 -p 8081 --anticache -z -w $name`", PHP_EOL;
+    echo "And open: http://localhost:8000", PHP_EOL;
+    fgets(STDIN);
+}
