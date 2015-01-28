@@ -29,7 +29,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
             function ($file) {
                 return array(pathinfo($file, PATHINFO_FILENAME));
             },
-            glob(__DIR__ . '/_fixtures/*.tns')
+            glob(__DIR__ . '/_fixtures/couchdb/*.tns')
         );
     }
 
@@ -43,7 +43,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $aggregate = array();
         $reader = new Reader\MitmDump(new MessageHandler\Symfony2());
-        foreach (glob(__DIR__ . '/_fixtures/*.tns') as $fixtureFile) {
+        foreach (glob(__DIR__ . '/_fixtures/couchdb/*.tns') as $fixtureFile) {
             $aggregate = array_merge(
                 $aggregate,
                 $reader->readInteractions($fixtureFile)
