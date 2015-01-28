@@ -2,6 +2,12 @@
 
 namespace Kagency\CouchdbEndpoint;
 
+/**
+ * Class: Replicator
+ *
+ * @version $Revision$
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Replicator
 {
     /**
