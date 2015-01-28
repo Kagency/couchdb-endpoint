@@ -11,7 +11,7 @@ require_once __DIR__ . '/../IntegrationTest.php';
 /**
  * @group integration
  */
-class MemoryTest extends IntegrationTest
+class CouchDBMemoryTest extends IntegrationTest
 {
     /**
      * Get replicator

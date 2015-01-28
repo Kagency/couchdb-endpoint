@@ -11,7 +11,7 @@ require_once __DIR__ . '/../IntegrationTest.php';
 /**
  * @group integration
  */
-class MySQLTest extends IntegrationTest
+class CouchDBMySQLTest extends IntegrationTest
 {
     /**
      * Container
