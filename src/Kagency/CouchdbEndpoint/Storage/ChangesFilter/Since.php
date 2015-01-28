@@ -37,7 +37,7 @@ class Since extends ChangesFilter
             array_filter(
                 $changes,
                 function (Update $update) {
-                    return $update->seq >= $this->since;
+                    return $update->seq > $this->since;
                 }
             )
         );
