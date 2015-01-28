@@ -55,4 +55,14 @@ class MySQLTest extends IntegrationTest
     {
         return $this->getContainer()->get('Kagency.CouchdbEndpoint.Replicator');
     }
+
+    /**
+     * Get base path
+     *
+     * @return string
+     */
+    protected function getBasePath()
+    {
+        return __DIR__ . '/../_fixtures/couchdb/';
+    }
 }

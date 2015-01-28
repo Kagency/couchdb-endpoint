@@ -23,4 +23,14 @@ class MemoryTest extends IntegrationTest
         $container = new Container();
         return $container->get('Kagency.CouchdbEndpoint.Replicator.Test');
     }
+
+    /**
+     * Get base path
+     *
+     * @return string
+     */
+    protected function getBasePath()
+    {
+        return __DIR__ . '/../_fixtures/couchdb/';
+    }
 }

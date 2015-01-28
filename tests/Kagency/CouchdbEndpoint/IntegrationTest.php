@@ -19,6 +19,13 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
     abstract protected function getReplicator();
 
     /**
+     * Get base path
+     *
+     * @return string
+     */
+    abstract protected function getBasePath();
+
+    /**
      * Get fixtures
      *
      * @return array
@@ -29,7 +36,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
             function ($file) {
                 return array(pathinfo($file, PATHINFO_FILENAME));
             },
-            glob(__DIR__ . '/_fixtures/couchdb/*.tns')
+            glob($this->getBasePath() . '/*.tns')
         );
     }
 
@@ -43,7 +50,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $aggregate = array();
         $reader = new Reader\MitmDump(new MessageHandler\Symfony2());
-        foreach (glob(__DIR__ . '/_fixtures/couchdb/*.tns') as $fixtureFile) {
+        foreach (glob($this->getBasePath() . '/*.tns') as $fixtureFile) {
             $aggregate = array_merge(
                 $aggregate,
                 $reader->readInteractions($fixtureFile)
