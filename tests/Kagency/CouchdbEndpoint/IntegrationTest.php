@@ -109,15 +109,15 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
                 'transfer-encoding',
             )),
             new ResponseFilter\ConditionalPathRegexp(
-                '(^/master/$)',
+                '(^/(?:master|api)/(?:\\?.*)?$)',
                 new ResponseFilter\JsonFilter(array('data_size', 'disk_size', 'instance_start_time', 'disk_format_version'))
             ),
             new ResponseFilter\ConditionalPathRegexp(
-                '(^/master/_ensure_full_commit$)',
+                '(^/(?:master|api)/_ensure_full_commit$)',
                 new ResponseFilter\JsonFilter(array('instance_start_time'))
             ),
             new ResponseFilter\ConditionalPathRegexp(
-                '(^/master/_local/[a-f0-9]{32}$)',
+                '(^/(?:master|api)/_local/[a-f0-9]{32}$)',
                 new ResponseFilter\JsonFilter(array('rev', '_rev'))
             ),
         ));
