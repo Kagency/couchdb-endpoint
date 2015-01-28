@@ -117,7 +117,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
                 new ResponseFilter\JsonFilter(array('instance_start_time'))
             ),
             new ResponseFilter\ConditionalPathRegexp(
-                '(^/(?:master|api)/_local/[a-f0-9]{32}$)',
+                '(^/(?:master|api)/_local/[a-zA-Z0-9=]+$)',
                 new ResponseFilter\JsonFilter(array('rev', '_rev'))
             ),
         ));

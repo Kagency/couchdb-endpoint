@@ -225,4 +225,23 @@ class Controller
             201
         );
     }
+
+    /**
+     * Get all docs
+     *
+     * @param Request $request
+     * @return ?
+     */
+    public function getAllDocs(Request $request)
+    {
+        return new JsonResponse(
+            $this->replicator->getAllDocuments(
+                json_decode($request->get('include_docs', "false")),
+                json_decode($request->get('keys', "[]")),
+                json_decode($request->get('skip', "0")),
+                json_decode($request->get('limit', "null"))
+            ),
+            200
+        );
+    }
 }

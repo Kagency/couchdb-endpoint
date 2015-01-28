@@ -75,6 +75,34 @@ class Replicator
     }
 
     /**
+     * Get all documents
+     *
+     * @param bool $includeDocs
+     * @param array $keys
+     * @param int $skip
+     * @param int $limit
+     * @return Document[]
+     */
+    public function getAllDocuments($includeDocs, array $keys, $skip = 0, $limit = null)
+    {
+        return new Replicator\Result(
+            array_map(
+                function ($documentId) {
+                    $revision = $this->storage->getLastRevision($documentId);
+                    $document = $this->storage->getDocument($documentId, $revision);
+                    return new Replicator\Row(
+                        $documentId,
+                        $documentId,
+                        array('rev' => $revision),
+                        $document
+                    );
+                },
+                $keys
+            )
+        );
+    }
+
+    /**
      * Check if change exists
      *
      * @param string $database
