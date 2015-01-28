@@ -598,16 +598,16 @@
     "packages-dev": [
         {
             "name": "kagency/http-replay",
-            "version": "0.1",
+            "version": "0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kagency/http-replay.git",
-                "reference": "aa22239ab1a96f7b83fef61a60741dbfce287053"
+                "reference": "9e040c1c3c9c2782b93353359efdc46ca78a3223"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kagency/http-replay/zipball/aa22239ab1a96f7b83fef61a60741dbfce287053",
-                "reference": "aa22239ab1a96f7b83fef61a60741dbfce287053",
+                "url": "https://api.github.com/repos/Kagency/http-replay/zipball/9e040c1c3c9c2782b93353359efdc46ca78a3223",
+                "reference": "9e040c1c3c9c2782b93353359efdc46ca78a3223",
                 "shasum": ""
             },
             "require": {
@@ -633,7 +633,7 @@
                 "MIT"
             ],
             "description": "Library to replay and compare HTTP requets and responses",
-            "time": "2014-06-20 06:39:44"
+            "time": "2015-01-28 13:06:01"
         },
         {
             "name": "pdepend/pdepend",
@@ -1083,22 +1083,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phuedx/tnetstring.git",
-                "reference": "1bbd830c5006d45664223ec398d8190c45bba4a0"
+                "reference": "514f48e22fe8057faadcb0f4146043fe091b051a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phuedx/tnetstring/zipball/1bbd830c5006d45664223ec398d8190c45bba4a0",
-                "reference": "1bbd830c5006d45664223ec398d8190c45bba4a0",
+                "url": "https://api.github.com/repos/phuedx/tnetstring/zipball/514f48e22fe8057faadcb0f4146043fe091b051a",
+                "reference": "514f48e22fe8057faadcb0f4146043fe091b051a",
                 "shasum": ""
             },
             "require": {
                 "php": ">= 5.2.17"
             },
+            "require-dev": {
+                "phpunit/phpunit": "4.1.*"
+            },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "TNetstring": "src/"
-                }
+                    "": "src/"
+                },
+                "files": [
+                    "tnetstring.php"
+                ]
             },
             "license": [
                 "MIT"
@@ -1106,7 +1112,7 @@
             "authors": [
                 {
                     "name": "Sam Smith",
-                    "email": "samuel.david.smith@gmail.com",
+                    "email": "yo@samsmith.io",
                     "homepage": "https://github.com/phuedx"
                 }
             ],
@@ -1120,7 +1126,7 @@
                 "source": "https://github.com/phuedx/tnetstring/tree/master",
                 "issues": "https://github.com/phuedx/tnetstring/issues"
             },
-            "time": "2012-03-01 09:09:59"
+            "time": "2014-12-10 19:55:58"
         },
         {
             "name": "sebastian/comparator",
@@ -1716,6 +1722,8 @@
         "phuedx/tnetstring": 20,
         "kagency/http-replay": 15
     },
+    "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": [],
     "platform-dev": []
 }
