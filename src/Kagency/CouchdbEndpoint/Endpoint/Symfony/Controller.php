@@ -155,16 +155,55 @@ class Controller
     /**
      * Get changes
      *
+     * @TODO: Should we do something with the heartbeat parameter?
+     *
      * @param Request $request
      * @return JsonResponse
      */
     public function getChanges(Request $request)
     {
-        // @TODO: Handle feed and style options, I gues those are
-        // output options.
-        //
-        // @TODO: Should we do something with the heartbeat parameter?
+        switch ($feed = $request->get('feed', 'normal')) {
+            case 'normal':
+                return $this->getNormalChanges($request);
+            case 'longpoll':
+                return $this->getLongpollChanges($request);
 
+            default:
+                throw new \OutOfBoundsException("Unknown feed style $feed");
+        }
+    }
+
+    /**
+     * Get changes in style "longpoll"
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    protected function getLongpollChanges(Request $request)
+    {
+        $since = $request->get('since', 0);
+        $tries = 0;
+        $sleepTime = 250 * 1000;
+        $maxTries = $request->get('timeout', 60000) * 1000 / $sleepTime;
+
+        do {
+            if ($tries++) {
+                usleep($sleepTime);
+            }
+            $changes = $this->replicator->getChanges($since);
+        } while (!count($changes->results) && ($tries < $maxTries));
+
+        return new JsonResponse($changes, 200);
+    }
+
+    /**
+     * Get changes in style "normal"
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    protected function getNormalChanges(Request $request)
+    {
         return new JsonResponse(
             $this->replicator->getChanges(
                 $request->get('since', 0)
