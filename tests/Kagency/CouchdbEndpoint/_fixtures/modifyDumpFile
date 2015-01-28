@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../../../../vendor/autoload.php';
+
+if (!isset($argv[1])) {
+    echo "Usage: ", $argv[0], " <dumpFile>", PHP_EOL;
+    exit(64);
+}
+
+$codec = new \Phuedx\TNetstring\Codec();
+$data = $codec->decode(file_get_contents($argv[1]));
+
+// Modify stuff
+$data[11]['request']['path'] = '/api/_changes?timeout=1000&style=all_docs&feed=longpoll&since=1&limit=100&_nonce=SOpDOE7TsUcDikK6';
+
+file_put_contents($argv[1], $codec->encode($data));
