@@ -15,6 +15,7 @@
     <!--
         Enable used modules
     -->
+    <import optional="true" file="${basedir}/ant/modules/dbdeploy.xml" />
     <import optional="true" file="${basedir}/ant/modules/composer.xml" />
     <import optional="true" file="${basedir}/ant/modules/phpunit.xml" />
     <import optional="true" file="${basedir}/ant/modules/checkstyle.xml" />
