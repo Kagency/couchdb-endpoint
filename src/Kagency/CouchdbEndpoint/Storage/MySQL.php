@@ -166,7 +166,7 @@ class MySQL extends Storage
      * @return void
      */
     protected function storeDocument(Document $document)
-    {
+    {        
         $query = $this->database->prepare(
             "INSERT INTO document (d_id, d_revision, d_document) VALUES (:id, :revision, :document);"
         );

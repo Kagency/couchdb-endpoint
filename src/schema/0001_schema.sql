@@ -33,8 +33,8 @@ SET foreign_key_checks = 0;
 
 -- Table: document (d)
 CREATE TABLE IF NOT EXISTS `document` (
-  `d_id` VARCHAR(64) NOT NULL,
-  `d_revision` VARCHAR(34) NOT NULL,
+  `d_id` VARCHAR(128) NOT NULL,
+  `d_revision` VARCHAR(128) NOT NULL,
   `d_document`  LONGBLOB NOT NULL,
   `changed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`d_id`, `d_revision`)
@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS `document` (
 -- Table: document_update (du)
 CREATE TABLE IF NOT EXISTS `document_update` (
   `du_sequence` BIGINT UNSIGNED NOT NULL,
-  `d_id` VARCHAR(64) NOT NULL,
-  `d_revision` VARCHAR(34) NOT NULL,
+  `d_id` VARCHAR(128) NOT NULL,
+  `d_revision` VARCHAR(128) NOT NULL,
   `changed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`du_sequence`),
   KEY (`d_id`, `d_revision`)
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `document_update` (
 
 -- Table: revision (r)
 CREATE TABLE IF NOT EXISTS `revision` (
-  `r_id` VARCHAR(34) NOT NULL,
+  `r_id` VARCHAR(128) NOT NULL,
   `r_revision`  LONGBLOB NOT NULL,
   `changed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`r_id`)
