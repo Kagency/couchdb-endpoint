@@ -7,7 +7,7 @@
     <parameters>
         <parameter key="pdo.dsn">mysql:dbname=couchdb;host=127.0.0.1</parameter>
         <parameter key="pdo.user">root</parameter>
-        <parameter key="pdo.password">1234</parameter>
+        <parameter key="pdo.password"></parameter>
     </parameters>
 
     <services>
