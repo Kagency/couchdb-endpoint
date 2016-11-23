@@ -35,6 +35,9 @@ class Symfony extends Endpoint
         $controller = new Symfony\Controller($replicator);
 
         $this->application->addRoute('GET', "/{database}/", array($controller, 'getDatabaseStatus'));
+        $this->application->addRoute('GET', "/{database}", array($controller, 'getDatabaseStatus'));
+        $this->application->addRoute('PUT', "/{database}/", array($controller, 'getDatabaseStatus'));
+        $this->application->addRoute('PUT', "/{database}", array($controller, 'getDatabaseStatus'));
         $this->application->addRoute('GET', "/{database}/_local/{revision}", array($controller, 'hasChange'));
         $this->application->addRoute('PUT', "/{database}/_local/{revision}", array($controller, 'storeSyncedChange'));
         $this->application->addRoute('POST', "/{database}/_revs_diff", array($controller, 'revisionDiff'));
