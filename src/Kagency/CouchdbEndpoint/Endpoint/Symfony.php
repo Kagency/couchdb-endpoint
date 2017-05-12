@@ -34,6 +34,8 @@ class Symfony extends Endpoint
         $this->application = new Symfony\Application();
         $controller = new Symfony\Controller($replicator);
 
+        $this->application->addRoute('OPTIONS', "/{database}/", array($controller, 'getDatabaseStatus'));
+        $this->application->addRoute('OPTIONS', "/{database}", array($controller, 'getDatabaseStatus'));
         $this->application->addRoute('GET', "/{database}/", array($controller, 'getDatabaseStatus'));
         $this->application->addRoute('GET', "/{database}", array($controller, 'getDatabaseStatus'));
         $this->application->addRoute('PUT', "/{database}/", array($controller, 'getDatabaseStatus'));

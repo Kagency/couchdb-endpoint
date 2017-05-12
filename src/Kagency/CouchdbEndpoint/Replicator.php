@@ -196,4 +196,9 @@ class Replicator
             $this->storage->storeSyncedChange($revisionDocument)
         );
     }
+
+    public function getURLOptions($database) 
+    {
+        return getDatabaseStatus($database);
+    }
 }
