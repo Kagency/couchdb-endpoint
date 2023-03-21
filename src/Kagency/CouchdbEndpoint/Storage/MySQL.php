@@ -166,7 +166,7 @@ class MySQL extends Storage
      * @return void
      */
     protected function storeDocument(Document $document)
-    {
+    {        
         $query = $this->database->prepare(
             "INSERT INTO document (d_id, d_revision, d_document) VALUES (:id, :revision, :document);"
         );
@@ -349,5 +349,32 @@ class MySQL extends Storage
         );
 
         return $revisionDocument['_rev'];
+    }
+
+    public function getAllKeys()
+    {
+        $strSQL = "select distinct d_id from document";
+	$query = $this->database->prepare($strSQL);
+	$query->execute();
+        $keys = $query->fetchAll();
+	$res = [];
+	foreach($keys as $key)
+	{
+            
+	    try
+	    {
+	        $rev = $this->getLastRevisionSilent($key[0]);
+	        if ( $rev !== NULL )
+	        {
+	    	    $doc = $this->getDocument($key[0],$rev);
+		    $del = get_object_vars($doc)["_deleted"];
+		    if ( $del != 1 )
+		    	$res[] = $key[0];
+	        }
+	    } catch (\Exception $ex)
+	    {
+	    }
+	}
+ 	return $res; 
     }
 }

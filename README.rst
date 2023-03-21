@@ -2,20 +2,11 @@
 Kagency
 =======
 
-.. image::  https://secure.travis-ci.org/Kagency/couchdb-endpoint.png
-   :alt:    Travis Status
-   :target: https://secure.travis-ci.org/Kagency/couchdb-endpoint
-   :align:  right
+This is a fork of Kagency couchdb-endpoint.
 
-This is a implementation of the CouchDB replication API in PHP.
+For configuration, copy src/services.dist.xml to src/services.xml and change the mysql parameters.
 
-The implementation is framework agnostic. The demo currently works with
-Symfony2, but you can integrate it with any other Framework.
-
-You can use custom storage engines. The tests currently run against a in-memory
-storage, but we successfully demoed it against a MySQL storage. Thus
-replicating a CouchDB into a MySQL database and back into another CouchDB.
-
+Now
 .. warning::
     This is work in progress. Do not rely on anything in here. While finishing
     the implementation basically everything might change.
@@ -24,5 +15,5 @@ replicating a CouchDB into a MySQL database and back into another CouchDB.
    Local Variables:
    mode: rst
    fill-column: 79
-   End: 
+   End:
    vim: et syn=rst tw=79

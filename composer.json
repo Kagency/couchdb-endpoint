@@ -14,12 +14,12 @@
         }
     },
     "require":      {
-        "symfony/http-kernel": "@stable",
-        "symfony/routing": "@stable",
-        "symfony/dependency-injection": "@stable",
-        "symfony/config": "@stable",
-        "symfony/yaml": "@stable",
-        "kore/data-object": "@stable"
+        "symfony/http-kernel": "2.2",
+        "symfony/routing": "2.2",
+        "symfony/dependency-injection": "2.2",
+        "symfony/config": "2.2",
+        "symfony/yaml": "2.2",
+        "kore/data-object": "2.2"
     },
     "require-dev": {
         "pdepend/pdepend": "@stable",

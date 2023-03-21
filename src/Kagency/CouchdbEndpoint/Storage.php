@@ -92,4 +92,13 @@ abstract class Storage
      * @return string
      */
     abstract public function storeSyncedChange(array $revisionDocument);
+
+    /**
+     * AllKeys
+     *
+     * Returns all the keys
+     *
+     * @return array
+     */
+    abstract public function getAllKeys();
 }

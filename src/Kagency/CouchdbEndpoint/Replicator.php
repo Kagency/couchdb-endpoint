@@ -91,6 +91,8 @@ class Replicator
      */
     public function getAllDocuments($includeDocs, array $keys, $skip = 0, $limit = null)
     {
+	// Traigo todas las claves
+        $keys = $this->storage->getAllKeys();
         return new Replicator\Result(
             array_map(
                 function ($documentId) {
@@ -193,5 +195,10 @@ class Replicator
             $revisionDocument['_id'],
             $this->storage->storeSyncedChange($revisionDocument)
         );
+    }
+
+    public function getURLOptions($database) 
+    {
+        return getDatabaseStatus($database);
     }
 }
